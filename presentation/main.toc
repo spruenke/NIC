@@ -1,0 +1,5 @@
+\beamer@sectionintoc {2}{Motivation}{3}{0}{1}
+\beamer@sectionintoc {3}{Emphasis on Statistics and Finance}{4}{0}{2}
+\beamer@sectionintoc {4}{Theory}{5}{0}{3}
+\beamer@sectionintoc {5}{Computation}{11}{0}{4}
+\beamer@sectionintoc {6}{Outlook}{17}{0}{5}

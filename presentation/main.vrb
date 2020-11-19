@@ -1,0 +1,14 @@
+\frametitle{\textbf{Example: Best Practice R}}
+    	In this example we exploit the matrix-structure of R resulting in a far more efficient computation. Some of you may know the usage of the apply-family to avoid for-loops, but matrix-algebra will usually be superior to apply in terms of efficency. The reason is, that apply is yet another for-loop in R. Matrix-functions in R are computed in C and thus highly competetive when it comes to speed.
+		\begin{block}{Code main part of t-Test - Best Practice}
+    	\begin{verbatim}
+T.x    = numeric(nboot)
+n      = length(x)
+t.true = (mean(x) - mu.0) / sqrt(var(x)) * sqrt(n)
+x.boot = matrix(sample(x, size = n*nboot, replace = T),
+         ncol = nboot)
+x.mean = colMeans(x.boot)
+x.var  = (colSums(x.boot^2) - n*x.mean^2)/(n-1)
+T.x    = sqrt(n) * (x.mean - mean(x)) / sqrt(x.var)
+    	\end{verbatim}
+		\end{block}
