@@ -97,6 +97,12 @@
         return(t.list)
     }
     
+    t.one.c = function(x, mu.0 = 0, alpha = 0.05, alternative = "two.sided", nboot = 100, boot.type = "np"){
+          y   = matrix(sample(x, size = nboot * length(x), replace = T), ncol = nboot, nrow = length(x))
+          t.c = .Call("t_stat", t(y), as.integer(length(x)), 
+                    as.integer(nboot), mean(x))
+          return(t.c)
+    }
     AB = replicate(1000, t.one.2(rnorm(20))$estimate)
         
     
