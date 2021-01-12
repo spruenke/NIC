@@ -126,6 +126,36 @@
     \field{year}{2001}
   \endentry
 
+  \entry{wboot2}{article}{}
+    \name{author}{2}{}{%
+      {{hash=DR}{%
+         family={Davidson},
+         familyi={D\bibinitperiod},
+         given={Russel},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=FE}{%
+         family={Flachaire},
+         familyi={F\bibinitperiod},
+         given={Emmanuel},
+         giveni={E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{DRFE1}
+    \strng{fullhash}{DRFE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2008}
+    \field{labeldatesource}{}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \field{pages}{162 \bibrangedash  169}
+    \field{title}{The wild bootstrap, tamed at last}
+    \field{volume}{146}
+    \field{journaltitle}{Journal of Econometrics}
+    \field{year}{2008}
+  \endentry
+
   \entry{boot1}{article}{}
     \name{author}{1}{}{%
       {{hash=EB}{%
@@ -148,6 +178,33 @@
     \field{volume}{7}
     \field{journaltitle}{The Annals of Statistics}
     \field{year}{1979}
+  \endentry
+
+  \entry{regression}{book}{}
+    \name{author}{2}{}{%
+      {{hash=FJ}{%
+         family={Fox},
+         familyi={F\bibinitperiod},
+         given={John},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=WS}{%
+         family={Weisberg},
+         familyi={W\bibinitperiod},
+         given={Sanford},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FJWS1}
+    \strng{fullhash}{FJWS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{title}{An R Companion to Applied Regression}
+    \field{year}{2018}
   \endentry
 
   \entry{boot2}{article}{}
@@ -421,6 +478,61 @@
     \field{year}{2002}
   \endentry
 
+  \entry{r}{manual}{}
+    \name{author}{1}{}{%
+      {{hash=R}{%
+         family={{R Core Team}},
+         familyi={R\bibinitperiod},
+      }}%
+    }
+    \list{organization}{1}{%
+      {R Foundation for Statistical Computing}%
+    }
+    \strng{namehash}{R1}
+    \strng{fullhash}{R1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2020}
+    \field{labeldatesource}{}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{title}{R: A Language and Environment for Statistical Computing}
+    \verb{url}
+    \verb https://www.R-project.org/
+    \endverb
+    \list{location}{1}{%
+      {Vienna, Austria}%
+    }
+    \field{year}{2020}
+  \endentry
+
+  \entry{t}{book}{}
+    \name{author}{2}{}{%
+      {{hash=TH}{%
+         family={Toutenburg},
+         familyi={T\bibinitperiod},
+         given={Helge},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=HC}{%
+         family={Heumann},
+         familyi={H\bibinitperiod},
+         given={Christian},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{THHC1}
+    \strng{fullhash}{THHC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2008}
+    \field{labeldatesource}{}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \field{title}{Induktive Statistik - Eine Einführung mit R und SPSS}
+    \field{year}{2008}
+  \endentry
+
   \entry{boot3}{article}{}
     \name{author}{4}{}{%
       {{hash=UM}{%
@@ -462,6 +574,32 @@
     \field{volume}{171}
     \field{journaltitle}{Journal of Multivariate Analysis}
     \field{year}{2019}
+  \endentry
+
+  \entry{wboot1}{article}{}
+    \name{author}{1}{}{%
+      {{hash=WCFJ}{%
+         family={Wu},
+         familyi={W\bibinitperiod},
+         given={C.\bibnamedelima F.\bibnamedelima J.},
+         giveni={C\bibinitperiod\bibinitdelim F\bibinitperiod\bibinitdelim
+  J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{WCFJ1}
+    \strng{fullhash}{WCFJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1986}
+    \field{labeldatesource}{}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{pages}{1261\bibrangedash 1295}
+    \field{title}{Jackknife, Bootstrap and Other Resampling Methods in
+  Regression Analysis}
+    \field{volume}{14}
+    \field{journaltitle}{Annals of Statistics}
+    \field{year}{1986}
   \endentry
 \enddatalist
 \endinput

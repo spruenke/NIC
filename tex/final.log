@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.6.29) (preloaded format=pdflatex 2020.7.10)  10 NOV 2020 18:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.6.29) (preloaded format=pdflatex 2020.7.10)  12 JAN 2021 18:22
 entering extended mode
 **./final.tex
 (final.tex
@@ -829,7 +829,7 @@ Package biblatex Info: ... file 'final.bbl' found.
  (final.bbl)
 Package biblatex Info: Reference section=0 on input line 61.
 Package biblatex Info: Reference segment=0 on input line 61.
-<hulogo.pdf, id=39, 130.88197pt x 130.88197pt>
+<hulogo.pdf, id=59, 130.88197pt x 130.88197pt>
 File: hulogo.pdf Graphic file (type pdf)
 <use hulogo.pdf>
 Package pdftex.def Info: hulogo.pdf  used on input line 100.
@@ -927,14 +927,22 @@ Underfull \hbox (badness 10000) in paragraph at lines 6--144
 
 [3
 
-] (methodology.tex) [4
+] (methodology.tex
+Underfull \hbox (badness 10000) in paragraph at lines 4--7
 
-] (simulation.tex) [5
+ []
 
-] (empirical.tex) [6
+[4
 
 ]
-(conclusion.tex) [7
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 40.
+ [5] [6]) [7] (simulation.tex) [8
+
+] (empirical.tex) [9
+
+] (conclusion.tex)
+[10
 
 ]
 
@@ -942,19 +950,27 @@ Package biblatex Warning: Name format 'last-first' deprecated.
 (biblatex)                Please use 'family-given' instead.
 (biblatex)                Using 'family-given' now.
 
-LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <12> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 167.
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
 67.
 (C:\Users\erin-\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [8
+)
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 16
+7.
+
+(C:\Users\erin-\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmr.fd
+File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+
+LaTeX Font Warning: Font shape `T1/lmss/m/sc' in size <12> not available
+(Font)              Font shape `T1/lmr/m/sc' tried instead on input line 167.
+
+[11
 
 
-]
-(appendix_a.tex)
+] [12] (appendix_a.tex)
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 183.
- [9
+ [13
 
 ]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 183.
@@ -962,43 +978,47 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 183.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 183.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 183.
 Package rerunfilecheck Info: File `final.out' has not changed.
-(rerunfilecheck)             Checksum: 516E95E1DFC8F701A9DB783C2AAB60B5;435.
+(rerunfilecheck)             Checksum: 6A9B9FEDCA8F455EBD87C05D9CF6A78B;785.
 Package logreq Info: Writing requests to 'final.run.xml'.
 \openout1 = `final.run.xml'.
 
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 183.
  ) 
 Here is how much of TeX's memory you used:
- 17183 strings out of 480790
- 287129 string characters out of 2897301
- 773256 words of memory out of 3000000
- 32850 multiletter control sequences out of 15000+200000
- 560395 words of font info for 51 fonts, out of 3000000 for 9000
+ 17299 strings out of 480790
+ 289179 string characters out of 2897301
+ 775524 words of memory out of 3000000
+ 32917 multiletter control sequences out of 15000+200000
+ 577570 words of font info for 57 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 40i,9n,46p,1137b,1667s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}{C
-:/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C:/Us
+ 40i,12n,46p,1137b,1667s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C
+:/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}{C:/Us
 ers/erin-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Us
 ers/erin-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc}{C:/Us
 ers/erin-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathex.enc}<C:/Us
-ers/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmex10.pfb><C:/Us
-ers/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi12.pfb><C:/Us
-ers/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi6.pfb><C:/Use
-rs/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/User
-s/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users
-/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/e
-rin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmss12.pfb><C:/Users/e
-rin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users
-/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsso12.pfb><C:/User
-s/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/User
-s/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users
-/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Users
-/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10
-.pfb><C:/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
-symbols/msam7.pfb>
-Output written on final.pdf (13 pages, 223916 bytes).
+ers/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Us
+ers/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmcsc10.pfb><C:/U
+sers/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmex10.pfb><C:/U
+sers/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi12.pfb><C:/U
+sers/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi6.pfb><C:/Us
+ers/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmmi8.pfb><C:/Use
+rs/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/User
+s/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr6.pfb><C:/Users/
+erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/er
+in-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmss12.pfb><C:/Users/er
+in-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/
+erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsso12.pfb><C:/Users
+/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy10.pfb><C:/Users
+/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Users/
+erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Users/
+erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.
+pfb><C:/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/s
+ymbols/msam7.pfb><C:/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/publ
+ic/amsfonts/symbols/msbm10.pfb>
+Output written on final.pdf (17 pages, 327377 bytes).
 PDF statistics:
- 222 PDF objects out of 1000 (max. 8388607)
- 41 named destinations out of 1000 (max. 500000)
- 78 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 326 PDF objects out of 1000 (max. 8388607)
+ 83 named destinations out of 1000 (max. 500000)
+ 118 words of extra memory for PDF output out of 10000 (max. 10000000)
 

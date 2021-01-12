@@ -29,8 +29,8 @@
                 x.mean  = colMeans(x.boot)
                 x.var   = (colSums(x.boot^2) - n*x.mean^2)/(n-1)
                 
-                results.summary[c(2,3,5)] = rowMeans(x.quant)
-                results.summary[4]        = mean(x.mean)
+                results.summary[c(2,3,5)] = rowMeans(x.quant) + mean(x)
+                results.summary[4]        = mean(x.mean) + mean(x)
                 results.summary[7]        = sqrt(mean(x.var))
                 results.summary[c(1,6)]   = c(min(x), max(x))
                

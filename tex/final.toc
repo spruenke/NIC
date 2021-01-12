@@ -9,12 +9,22 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {4}Methodology}{4}{section.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5}Simulation Settings}{5}{section.5}%
+\contentsline {subsection}{\numberline {4.1}Advantages and Disadvantages}{4}{subsection.4.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6}Empirical Analysis}{6}{section.6}%
+\contentsline {subsection}{\numberline {4.2}Mathematical Aspects}{4}{subsection.4.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7}Conclusion}{7}{section.7}%
+\contentsline {section}{\numberline {5}Simulation Settings}{8}{section.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {}References}{8}{section*.4}%
+\contentsline {section}{\numberline {6}Empirical Analysis}{9}{section.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {}Appendix A}{9}{section*.5}%
+\contentsline {subsection}{\numberline {6.1}Accuracy}{9}{subsection.6.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2}Type I and II Errors}{9}{subsection.6.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.3}Computational Complexity}{9}{subsection.6.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7}Conclusion}{10}{section.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {}References}{11}{section*.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {}Appendix A}{13}{section*.8}%

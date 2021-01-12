@@ -2,8 +2,13 @@
 \BOOKMARK [1][-]{section.2}{Related Literature}{}% 2
 \BOOKMARK [1][-]{section.3}{Applications}{}% 3
 \BOOKMARK [1][-]{section.4}{Methodology}{}% 4
-\BOOKMARK [1][-]{section.5}{Simulation Settings}{}% 5
-\BOOKMARK [1][-]{section.6}{Empirical Analysis}{}% 6
-\BOOKMARK [1][-]{section.7}{Conclusion}{}% 7
-\BOOKMARK [1][-]{section*.4}{References}{}% 8
-\BOOKMARK [1][-]{section*.5}{Appendix A}{}% 9
+\BOOKMARK [2][-]{subsection.4.1}{Advantages and Disadvantages}{section.4}% 5
+\BOOKMARK [2][-]{subsection.4.2}{Mathematical Aspects}{section.4}% 6
+\BOOKMARK [1][-]{section.5}{Simulation Settings}{}% 7
+\BOOKMARK [1][-]{section.6}{Empirical Analysis}{}% 8
+\BOOKMARK [2][-]{subsection.6.1}{Accuracy}{section.6}% 9
+\BOOKMARK [2][-]{subsection.6.2}{Type I and II Errors}{section.6}% 10
+\BOOKMARK [2][-]{subsection.6.3}{Computational Complexity}{section.6}% 11
+\BOOKMARK [1][-]{section.7}{Conclusion}{}% 12
+\BOOKMARK [1][-]{section*.7}{References}{}% 13
+\BOOKMARK [1][-]{section*.8}{Appendix A}{}% 14
