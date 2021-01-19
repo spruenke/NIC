@@ -1,7 +1,7 @@
 This section will cover formal aspects of the bootstrapping and is divided into two parts. The first one is a short overview of advantages and disadvantages. The second part will briefly describe mathematical aspects of the different applications covered within this seminar paper. 
 
 \subsection{Advantages and Disadvantages}
-One of the main advantages given by bootstrapping is the sample size. Usually, especially for frequentist statistics, small sample sizes are a huge problem since many applications or theorems rely on large samples or asymptotic behaviour. However, there are many situations where the researcher has to deal with a small sample size. Classical statistics fastly become unreliable in such a setting. Here, resampling provides a solution to overcome this issue. \\
+One of the main advantages given by bootstrapping is the sample size. Usually, especially for frequentist statistics, small sample sizes are a huge problem since many applications or theorems rely on large samples or asymptotic behaviour. However, there are many situations where the researcher has to deal with a small sample size. Classical statistics fast become unreliable in such a setting. Here, resampling provides a solution to overcome this issue. \\
 \\
 \noindent However, if the original sample from which resampling is conducted is a bad sample, the resampling techniques will not help any further. For example, consider a sample size of four and two observations of this are outliers, then the probability of resampling the outliers is quite high, although they might be unlikely in general. So, the resampling (as the name implies) relies on the sample as well and this is the main disadvantage. 
 
@@ -11,24 +11,24 @@ The general idea of bootstrapping is the following (for $nboot$ number of resamp
 \begin{enumerate}
 	\item Fix the data x
 	\item FOR $i$ IN $1$ TO $nboot$ DO
-	\item \begin{enumerate}
+	 \begin{enumerate}
 		\item Sample $x\star$ from x
 		\item Compute the statistic of interest for $x\star$
 		\item Save the respective statistic at the $i$-th position of a vector $T\star$
 	\end{enumerate}
 	\item Compute Mean (or Median, Confidence Intervals, or any other statistic) of the vector $T\star$.
 \end{enumerate}
-Mathematically, the bootstrapping algorithm makes use of the strong low of large numbers and creates an empirical distribution of the statistic of interest to mimic the true but unknown distribution.
+Mathematically, the bootstrapping algorithm makes use of the strong law of large numbers and creates an empirical distribution of the statistic of interest to mimic the true but unknown distribution.
 \begin{align*}
 	\lim_{n \to \infty} \frac{1}{n}\sum_{i=1}^n X_i \quad &\stackrel{a.s.}{\to} \quad \E[X] \\
 	\lim_{n \to \infty} F_n(x) \quad &\stackrel{a.s.}{\to} \quad F^X(x).
 \end{align*}
 Note, that the first one (law of large numbers) relies on pairwise independence if $X \in \mathcal{L}^1$ or at least uncorrelatedness if $X \in \mathcal{L}^2$. The second equation is the convergence of the empirical distribution function $F_n(x)$ to the true distribution function $F^X(x)$. This follows immediately from the law of large numbers.\\
-There are two versions of bootstrap incorporated in this paper: The nonparametric bootstrap and the wild bootstrap (Rademacher-version). The nonparametric bootstrap procedes pretty much in the way described above, where in the resampling step the data is resampled with replacement and each observation has an equal probability of getting into the bootstrap sample. On the other hand, the wild bootstrap proceeds differently. The following Pseudocode demonstrates the Rademacher wild bootstrap:
+There are two versions of bootstrap incorporated in this paper: The nonparametric bootstrap and the wild bootstrap (Rademacher-version). The nonparametric bootstrap proceeds pretty much in the way described above, where in the resampling step the data is resampled with replacement and each observation has an equal probability of getting into the bootstrap sample. On the other hand, the wild bootstrap proceeds differently. The following Pseudocode demonstrates the Rademacher wild bootstrap:
 \begin{enumerate}
 	\item Fix the data x
 	\item FOR $i$ IN $1$ TO $nboot$ DO
-	\item \begin{enumerate}
+	\begin{enumerate}
 		\item Sample vector $z$ from $\{-1,1\}$ with replacement and of same length as x
 		\item Create bootstrap sample $x\star = z \odot (x - \bar{x})$ (Hadamard product)
 		\item Compute the statistic of interest for $x\star$
@@ -37,7 +37,7 @@ There are two versions of bootstrap incorporated in this paper: The nonparametri
 	\item Compute Mean (or Median, Confidence Intervals, or any other statistic) of the vector $T\star$.
 \end{enumerate}
 	\subsubsection*{Summary Statistics}
-As mentioned before, there are three types of statistics we are going to analyze in the empirical section of this paper. The first type are summary statistics, computing the following metrics: Minimum, $25\%$-quantile, Median, Mean, $75\%$-quantile, Maximum and Standard Deviation. Of course, the Minimum and the Maximum are not really able to be resampled, since the absolute Minimum (Maximum) that could be obtained in the resampling is the actual Minimum (Maximum) of the original sample. The quantiles (and the Median is the $50\%$-quantile) are computed in the default way of the respective R-function \textit{quantile}, see \citet{r}. \\ The Standard Deviation is the squareroot of the corrected sample Variance. Since the original data is centered for the wild bootstrap, finally the original's sample mean has to be added to the bootstrapped location parameters. Sloppy said, this procedure of estimating parameters can be thought of as a nonparametric maximum likelihood approach, although this is not quite precisely formulated.
+As mentioned before, there are three types of statistics we are going to analyze in the empirical section of this paper. The first type are summary statistics, computing the following metrics: Minimum, $25\%$-quantile, Median, Mean, $75\%$-quantile, Maximum and Standard Deviation. Of course, the Minimum and the Maximum are not really able to be resampled, since the absolute Minimum (Maximum) that could be obtained in the resampling is the actual Minimum (Maximum) of the original sample. The quantiles (and the Median is the $50\%$-quantile) are computed in the default way of the respective R-function \textit{quantile}, see \citet{r}. \\ The Standard Deviation is the squareroot of the corrected sample Variance. Since the original data is centered for the wild bootstrap, finally the original's sample mean has to be added to the bootstrapped location parameters. Sloppily said, this procedure of estimating parameters can be thought of as a nonparametric maximum likelihood approach, although this is not quite precisely formulated.
 
 	\subsubsection*{t-Type Test Statistics}
 Although simple, the t-type tests are a nice example for bootstrapping. However, this procedure can be extended to all possible test procedures one can think of (Lilliefors, Wilcoxon-Signed-Rank, Friedman, etc.). The idea is basically the same as before and the algorithm works in the same way. However, the statistic of interest is the T-statistic. For the one-sample case that is the following equation, see \citet{t}:
@@ -53,16 +53,16 @@ where $\E[X\star \mid X] = \bar{X}$, so the conditional expectation of the boots
 	X'\star \quad &:= \quad X_2\star - X_1\star \\
 	T(X'\star \mid X) \quad &= \quad \frac{\bar{X'\star} - \E[\bar{X'\star}]}{\sqrt{\frac{\hat{\sigma_1^2\star}}{n_1} + \frac{\hat{\sigma_2^2\star}}{n_2}}},
 \end{align*}
-where $n_1$ and $n_2$ refer to the sample sizes. Also, under the null hypothesis when testing for equality of means the expectation of mean difference is zero (i.e. $\E[\bar{X*\star}] = 0$). The resampling procedure for nonparametric and wild stays the same. However, for the two-sample problem we introduce the groupwise nonparametric bootstrap as well. The nonparametric bootstrap samples from the whole sample $\{\{x \in X_1\}, \{x \in X_2\}\}$, whereas the groupwise nonparametric bootstrap respects the different samples observations came from. That means, that $X_1\star$ is directly sampled from $\{x \in X_1\}$ (and the same for $X_2\star$).
+where $n_1$ and $n_2$ refer to the sample sizes. Also, under the null hypothesis when testing for equality of means the expectation of mean difference is zero (i.e. $\E[\bar{X'\star}] = 0$). The resampling procedure for nonparametric and wild stays the same. However, for the two-sample problem we introduce the groupwise nonparametric bootstrap as well. The nonparametric bootstrap samples from the whole sample $\{\{x \in X_1\}, \{x \in X_2\}\}$, whereas the groupwise nonparametric bootstrap respects the different samples where observations came from. That means, that $X_1\star$ is directly sampled from $\{x \in X_1\}$ (and the same for $X_2\star$).
 
 	\subsubsection*{Regression Coefficients}
-Bootstrapping the regression is also a matter where bootstrap can provide significant improvements to estimation. Especially the wild bootstrap has it's origins in the field of regression analysis, see \citet{wboot1}. Furthermore, it is continuously studied, see \citet{wboot2}. As before, bootstrap grants the possibility to obtain point- and set-estimates for the coefficients. According to \citet{regression}, if the matrix of covariates $X$ is random (or at least not fixed), one has to resample the whole pairs of $(Y_i, X_{i\cdot})$ and estimate the linear model for the new data. We apply such an approach in our nonparametric bootstrap version of the linear regression. However, if X is assumed to be deterministic/fixed, then it's enough to resample the residuals of the regression. This is, where we apply the wild bootstrap in the following way:
+Bootstrapping the regression is also an issue where bootstrap can provide significant improvements to estimation. Especially the wild bootstrap has it's origins in the field of regression analysis, see \citet{wboot1}. Furthermore, it is continuously studied, see \citet{wboot2}. As before, bootstrap grants the possibility to obtain point- and set-estimates for the coefficients. According to \citet{regression}, if the matrix of covariates $X$ is random (or at least not fixed), one has to resample the whole pairs of $(Y_i, X_{i\cdot})$ and estimate the linear model for the new data. We apply such an approach in our nonparametric bootstrap version of the linear regression. However, if X is assumed to be deterministic/fixed, then it's enough to resample the residuals of the regression. This is, where we apply the wild bootstrap in the following way:
 \begin{enumerate}
 	\item Fix the data $(Y, X)$
 	\item Estimate linear model for $(Y, X)$ and predict fitted values $\hat{Y}$
 	\item Save residuals $\epsilon = Y - \hat{Y}$
 	\item FOR $i$ IN $1$ TO $nboot$ DO
-	\item \begin{enumerate}
+	\begin{enumerate}
 		\item Sample vector $z$ from $\{-1,1\}$ with replacement and of same length as $\epsilon$
 		\item Create bootstrap sample $\epsilon\star = z \odot \epsilon$ (Hadamard product)
 		\item Create bootstrap sample $Y\star = \hat{Y} + \epsilon\star$

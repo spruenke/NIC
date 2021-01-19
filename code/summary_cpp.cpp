@@ -1,7 +1,7 @@
-#include <RcppArmadillo.h>
+
+#include <Rcpp.h>
 using namespace Rcpp;
 
-// [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 NumericVector summaryBoot(NumericVector x, const int nboot) {
     int n = x.length();
@@ -13,8 +13,7 @@ NumericVector summaryBoot(NumericVector x, const int nboot) {
     NumericVector uQ(nboot);
     NumericVector var(nboot);
     for(int i = 0; i < nboot; i++){
-        NumericVector w = as<NumericVector>(wrap(sample(v, n, true)));
-        NumericVector xBoot = x[w];
+        NumericVector xBoot = Rcpp::sample(x, n, true);
         xBoot.sort();
         
         double ind_1 = 1 + (n - 1) * 0.25;
@@ -47,11 +46,11 @@ NumericVector summaryBoot(NumericVector x, const int nboot) {
         var[i] = std::sqrt(xSq / (n-1));
     }
     
-    summaryBoot[1] = mean(lQ);
-    summaryBoot[2] = mean(med);
-    summaryBoot[3] = mean(men);
-    summaryBoot[4] = mean(uQ);
-    summaryBoot[5] = mean(var);
+    summaryBoot[0] = mean(lQ);
+    summaryBoot[1] = mean(med);
+    summaryBoot[2] = mean(men);
+    summaryBoot[3] = mean(uQ);
+    summaryBoot[4] = mean(var);
     
     return summaryBoot;
 }
