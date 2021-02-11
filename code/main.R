@@ -2,7 +2,7 @@
 
 pkgs = c("Rcpp", "RcppArmadillo", "microbenchmark", "ggplot2")
 if(pkgs %in% installed.packages() == F) install.packages(pkgs = pkgs, dependencies = T)
-lapply(pkgs, library, quietly = T)
+lapply(as.list(pkgs), library, quietly = T, character.only = T)
 
 ############################################
 ############# Source Functions #############
@@ -19,25 +19,32 @@ source("regression.R") # Bootstrap Linear Regression
 
 nboots = c(10, 100, 500, 1000, 10000) # define different bootstrap iterations
 n      = c(5, 10, 15, 20, 50, 100, 200) # define different sample sizes
-dat.R    = expand.grid(nboots, n)
-colnames(dat) = c("nboots", "n")
+dat.R  = expand.grid(nboots, n)
+colnames(dat.R) = c("nboots", "n")
+dat.R  = data.frame(dat.R, MSE = NA, MAE = NA)
 dat.Cpp  = dat.R
 
-##### Precision of NP and Wild dependent on n, nboot and language
+mae.fun = function(x, value){
+    return(mean(abs(x - value)))
+}
+mse.fun = function(x, value){
+    return(mean((x - value)^2))
+}
 
-# True values
+##### Summary statistics
+
+# True values (arbitrary)
 q.025 = qnorm(0.25)
 q.05  = 0
 x.m   = 0
 q.075 = qnorm(0.75)
 x.sd  = 1
 
+for(i in 1:nrow(dat.R)){
+    x.sample = rnorm(n = dat.R$n, mean = x.m, sd = x.sd)
+    
+}
+
 ######## dependent on language
 
 ######## dependent on nboot and n
-######## The following double loop is rather inefficient but convenient to read and write
-for(i in 1:length(nboots)){
-    for(j in 1:length(n)){
-        
-    }
-}

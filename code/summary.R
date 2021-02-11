@@ -1,5 +1,5 @@
 # # # # # # SUMMARY STATISTICS # # # # # #
-
+  sourceCpp("summary_cpp.cpp")
   summary.boot = function(x, nboot = 100, boot.type = "np"){
     n = length(x)
     results.summary = numeric(7) # min, l-quartile, median, mean, u-quartile, max, sd
@@ -50,7 +50,7 @@
                 results.summary[c(2,3,4,5,7)] = summaryBoot(x, nboot)
           },
           wild = {
-            print("hi")
+                results.summary[c(2,3,4,5,7)] = summaryBootWild(x, nboot)
           }
     )
     results.summary = round(results.summary, 4)
