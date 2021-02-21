@@ -23,7 +23,7 @@
              wild = {
                 z       = x - mean(x)
                 w.boot  = matrix(sample(c(-1,1), size = n*nboot, replace = T), ncol = nboot)
-                x.boot  = z * w
+                x.boot  = z * w.boot
                 
                 x.quant = apply(x.boot, 2, quantile, probs = c(0.25, 0.5, 0.75))
                 x.mean  = colMeans(x.boot)

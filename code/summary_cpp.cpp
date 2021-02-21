@@ -55,10 +55,11 @@ NumericVector summaryBoot(NumericVector x, const int nboot) {
     return summaryBoot;
 }
 
+
+// [[Rcpp::export]]
 NumericVector summaryBootWild(NumericVector x, const int nboot) {
     int n = x.length();
     NumericVector summaryBoot(5);
-    IntegerVector v = seq(0, (n-1));
     NumericVector lQ(nboot);
     NumericVector med(nboot);
     NumericVector men(nboot);
@@ -66,11 +67,11 @@ NumericVector summaryBootWild(NumericVector x, const int nboot) {
     NumericVector var(nboot);
     double xMean = mean(x);
     NumericVector xSample = x - xMean;
-    IntegerVector v;
-    v[0] = -1;
-    v[1] = 1;
+    NumericVector w(2);
+    w[0] = -1;
+    w[1] = 1;
     for(int i = 0; i < nboot; i++){
-        NumericVector z = Rcpp::sample(v, n, true);
+        NumericVector z = Rcpp::sample(w, n, true);
         NumericVector xBoot = z * xSample;
         xBoot.sort();
         

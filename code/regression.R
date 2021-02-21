@@ -2,19 +2,19 @@
 sourceCpp("rcpp_beta.cpp")
 # see Fox and Weisberg (2019)
 reg.boot = function(y, x, nboot = 100, boot.type = "np", intercept = T){
-  if(length(names(Filter(is.factor, x))) != 0){warning("There are factors in your data! Please convert them to appropriate dummies before running this function!")}
+  #if(length(names(Filter(is.factor, x))) != 0){warning("There are factors in your data! Please convert them to appropriate dummies before running this function!")}
 
-  var.names = colnames(x)
+  #var.names = colnames(x)
     if(intercept == T){
         x = cbind(rep(1, nrow(x)), x)
-        var.names = c("Intercept", var.names)
+        #var.names = c("Intercept", var.names)
     }
     beta.boot = matrix(NA, ncol = nboot, nrow = ncol(x))
     data = cbind(y,x)
     data = as.matrix(data)
 
     beta.true           = as.vector(solve(t(data[,-1])%*%data[,-1])%*%t(data[,-1])%*%data[,1])
-    names(beta.true)    = var.names
+    #names(beta.true)    = var.names
     y.hat               = data[,-1]%*%beta.true
 
     if(boot.type == "np"){
@@ -38,24 +38,24 @@ reg.boot = function(y, x, nboot = 100, boot.type = "np", intercept = T){
     }
 
     beta                = rowMeans(beta.boot)
-    names(beta)         = var.names
-    beta.var            = (rowSums(beta.boot^2) - nboot * rowMeans(beta.boot)^2) / (nboot - 1)
+   # names(beta)         = var.names
+    beta.var            = (rowSums(beta.boot^2) - ncol(x) * rowMeans(beta.boot)^2) / (ncol(x) - 1)
     beta.sd             = sqrt(beta.var)
-    names(beta.sd)      = var.names
+   # names(beta.sd)      = var.names
 
     conf.int            = apply(beta.boot, 1, quantile, probs = c(0.025, 0.975))
-    colnames(conf.int)  = var.names
+   # colnames(conf.int)  = var.names
     return(list("true"  = beta.true, "estimate" = beta, "conf.int" = conf.int, "Std.D." = beta.sd))
 
 }
 
 reg.boot.c = function(y, x, nboot = 100, boot.type = "np", intercept = T){
-  if(length(names(Filter(is.factor, x))) != 0){warning("There are factors in your data! Please convert them to appropriate dummies before running this function!")}
+  #if(length(names(Filter(is.factor, x))) != 0){warning("There are factors in your data! Please convert them to appropriate dummies before running this function!")}
   
-  var.names = colnames(x)
+  #var.names = colnames(x)
   if(intercept == T){
     x = cbind(rep(1, nrow(x)), x)
-    var.names = c("Intercept", var.names)
+    #var.names = c("Intercept", var.names)
   }
   
   data = cbind(y,x)
@@ -63,32 +63,24 @@ reg.boot.c = function(y, x, nboot = 100, boot.type = "np", intercept = T){
   
 switch(boot.type,
        np = {
-          beta.hat = betaBoot(y, data[,-1], nboot)
+          beta.boot = betaBoot(y, data[,-1], nboot)
        },
        wild = {
-          beta.hat = BetaBootWild(y, data[,-1], nboot)
+          beta.boot = BetaBootWild(y, data[,-1], nboot)
        }
        )
   
   beta.true           = as.vector(solve(t(data[,-1])%*%data[,-1])%*%t(data[,-1])%*%data[,1])
-  names(beta.true)    = var.names
+ # names(beta.true)    = var.names
   y.hat               = data[,-1]%*%beta.true
   
   beta                = rowMeans(beta.boot)
-  names(beta)         = var.names
-  beta.var            = (rowSums(beta.boot^2) - nboot * rowMeans(beta.boot)^2) / (nboot - 1)
+  #names(beta)         = var.names
+  beta.var            = (rowSums(beta.boot^2) - ncol(x) * rowMeans(beta.boot)^2) / (ncol(x) - 1)
   beta.sd             = sqrt(beta.var)
-  names(beta.sd)      = var.names
+ # names(beta.sd)      = var.names
   
   conf.int            = apply(beta.boot, 1, quantile, probs = c(0.025, 0.975))
-  colnames(conf.int)  = var.names
+  #colnames(conf.int)  = var.names
   return(list("true"  = beta.true, "estimate" = beta, "conf.int" = conf.int, "Std.D." = beta.sd))
 }
-
-microbenchmark(reg.boot(y.test, x.test, nboot = 1000, intercept = F, boot.type = "wild"),
-               BetaBootWild(y.test, x.test, 1000))
-
-microbenchmark(reg.boot(y.test, x.test, nboot = 1000, intercept = F),
-               betaBoot(y.test, x.test, 1000))
-
-A = matrix(rnorm(10000), nrow = 1000)
