@@ -24,7 +24,7 @@ t.testBoot <- function(x, y = NULL, mu.0 = 0, alpha = 0.05, alternative = "two.s
            }
     )
     
-    crit   <- quantile(T.x, probs = c(alpha/2, alpha, 1-alpha, 1-alpha/2)) # compute critical values for one- and twosided
+    crit   <- quantile(T.x, probs = c(alpha/2, alpha, 1-alpha, 1-alpha/2), na.rm = T) # compute critical values for one- and twosided
     switch(alternative, # switch between alternative hypotheses and choose whether to reject or not reject
            two.sided = {
              ret    <- (t.true < crit[1] || t.true > crit[4])
@@ -44,19 +44,20 @@ t.testBoot <- function(x, y = NULL, mu.0 = 0, alpha = 0.05, alternative = "two.s
     p.v  <- min(2 * p.v, 2 - 2 * p.v)
     
     # Prepare Results #######################################
-    names(mu.0)     <- "mean"
-    pop.var         <- mean(x.mean)
-    names(pop.var)  <- "Mean"
-    pop.stat        <- t.true
-    names(pop.stat) <- "t"
-    pop.par         <- length(x) - 1
-    names(pop.par)  <- "df"
-    conf.int        <- quantile(x.mean, probs = c(alpha/2, 1-alpha/2))
-    attr(conf.int, "conf.level") <- 1 - alpha
-    ##########################################################
-    
-    t.list        <- list("reject" = ret, "null.value" = mu.0, "alternative" = alternative, "method" = "t.test", "estimate" = pop.var, "data.name" = deparse(substitute(x)), "statistic" = pop.stat, "parameters" = pop.par, "p.value" = p.v, "estimation.method" = est, "sample.size" = length(x), "conf.int" = conf.int)
-    class(t.list) <- c("htest", class(t.list))
+    # names(mu.0)     <- "mean"
+    # pop.var         <- mean(x.mean)
+    # names(pop.var)  <- "Mean"
+    # pop.stat        <- t.true
+    # names(pop.stat) <- "t"
+    # pop.par         <- length(x) - 1
+    # names(pop.par)  <- "df"
+    # conf.int        <- quantile(x.mean, probs = c(alpha/2, 1-alpha/2))
+    # attr(conf.int, "conf.level") <- 1 - alpha
+    # ##########################################################
+    # 
+    # t.list        <- list("reject" = ret, "null.value" = mu.0, "alternative" = alternative, "method" = "t.test", "estimate" = pop.var, "data.name" = deparse(substitute(x)), "statistic" = pop.stat, "parameters" = pop.par, "p.value" = p.v, "estimation.method" = est, "sample.size" = length(x), "conf.int" = conf.int)
+    # class(t.list) <- c("htest", class(t.list))
+    t.list = list("reject" = ret, "p.value" = p.v)
     return(t.list)
   }
   if(!is.null(y)){
@@ -106,7 +107,7 @@ t.testBoot <- function(x, y = NULL, mu.0 = 0, alpha = 0.05, alternative = "two.s
     )
     
     
-    crit   <- quantile(T.x, probs = c(alpha/2, alpha, 1-alpha, 1-alpha/2)) # compute critical values for one- and twosided
+    crit   <- quantile(T.x, probs = c(alpha/2, alpha, 1-alpha, 1-alpha/2), na.rm = T) # compute critical values for one- and twosided
     switch(alternative, # switch between alternative hypotheses and choose whether to reject or not reject
            two.sided = {
              ret    <- (t.true < crit[1] || t.true > crit[4])
@@ -126,23 +127,24 @@ t.testBoot <- function(x, y = NULL, mu.0 = 0, alpha = 0.05, alternative = "two.s
     p.v  <- min(p.v, 1 - p.v)
     
     # Prepare Results #######################################
-    dat.nam         <- c(deparse(substitute(x.1)), deparse(substitute(x.2)))
-    dat.nam.2       <- paste(dat.nam[1], "and", dat.nam[2])
-    h.0             <- 0
-    names(h.0)      <- "difference in means"
-    pop.var         <- c(mean(x.1.mean), mean(x.2.mean))
-    names(pop.var)  <- paste("Mean of", dat.nam)
-    pop.stat        <- t.true
-    names(pop.stat) <- "t"
-    pop.par         <- n - 2
-    names(pop.par)  <- "df"
-    conf.int        <- quantile((x.1.mean - x.2.mean), probs = c(alpha/2, 1-alpha/2))
-    
-    attr(conf.int, "conf.level") <- 1 - alpha
-    ##########################################################
-    
-    t.list        <- list("reject" = ret ,"null.value" = h.0, "alternative" = alternative, "method" = "Welch Two Sample t-Test", "estimate" = pop.var, "data.name" = dat.nam.2, "statistic" = pop.stat, "parameters" = pop.par, "p.value" = p.v, "estimation.method" = est, "sample.size" = n, "conf.int" = conf.int)
-    class(t.list) <- c("htest", class(t.list))
+    # dat.nam         <- c(deparse(substitute(x.1)), deparse(substitute(x.2)))
+    # dat.nam.2       <- paste(dat.nam[1], "and", dat.nam[2])
+    # h.0             <- 0
+    # names(h.0)      <- "difference in means"
+    # pop.var         <- c(mean(x.1.mean), mean(x.2.mean))
+    # names(pop.var)  <- paste("Mean of", dat.nam)
+    # pop.stat        <- t.true
+    # names(pop.stat) <- "t"
+    # pop.par         <- n - 2
+    # names(pop.par)  <- "df"
+    # conf.int        <- quantile((x.1.mean - x.2.mean), probs = c(alpha/2, 1-alpha/2))
+    # 
+    # attr(conf.int, "conf.level") <- 1 - alpha
+    # ##########################################################
+    # 
+    # t.list        <- list("reject" = ret ,"null.value" = h.0, "alternative" = alternative, "method" = "Welch Two Sample t-Test", "estimate" = pop.var, "data.name" = dat.nam.2, "statistic" = pop.stat, "parameters" = pop.par, "p.value" = p.v, "estimation.method" = est, "sample.size" = n, "conf.int" = conf.int)
+    # class(t.list) <- c("htest", class(t.list))
+    t.list = list("reject" = ret, "p.value" = p.v)
     return(t.list)
   }
 }
@@ -164,7 +166,7 @@ t.testBoot.cpp <- function(x, y = NULL, mu.0 = 0, alpha = 0.05, alternative = "t
            }
     )
     
-    crit   <- quantile(T.x, probs = c(alpha/2, alpha, 1-alpha, 1-alpha/2)) # compute critical values for one- and twosided
+    crit   <- quantile(T.x, probs = c(alpha/2, alpha, 1-alpha, 1-alpha/2), na.rm = T) # compute critical values for one- and twosided
     switch(alternative, # switch between alternative hypotheses and choose whether to reject or not reject
            two.sided = {
              ret    <- (t.true < crit[1] || t.true > crit[4])
@@ -184,19 +186,20 @@ t.testBoot.cpp <- function(x, y = NULL, mu.0 = 0, alpha = 0.05, alternative = "t
     p.v  <- min(2 * p.v, 2 - 2 * p.v)
     
     # Prepare Results #######################################
-    names(mu.0)     <- "mean"
-    pop.var         <- mean(x.mean)
-    names(pop.var)  <- "Mean"
-    pop.stat        <- t.true
-    names(pop.stat) <- "t"
-    pop.par         <- length(x) - 1
-    names(pop.par)  <- "df"
-    conf.int        <- quantile(x.mean, probs = c(alpha/2, 1-alpha/2))
-    attr(conf.int, "conf.level") <- 1 - alpha
-    ##########################################################
-    
-    t.list        <- list("reject" = ret, "null.value" = mu.0, "alternative" = alternative, "method" = "t.test", "estimate" = pop.var, "data.name" = deparse(substitute(x)), "statistic" = pop.stat, "parameters" = pop.par, "p.value" = p.v, "estimation.method" = est, "sample.size" = length(x), "conf.int" = conf.int)
-    class(t.list) <- c("htest", class(t.list))
+    # names(mu.0)     <- "mean"
+    # pop.var         <- mean(x.mean)
+    # names(pop.var)  <- "Mean"
+    # pop.stat        <- t.true
+    # names(pop.stat) <- "t"
+    # pop.par         <- length(x) - 1
+    # names(pop.par)  <- "df"
+    # conf.int        <- quantile(x.mean, probs = c(alpha/2, 1-alpha/2))
+    # attr(conf.int, "conf.level") <- 1 - alpha
+    # ##########################################################
+    # 
+    # t.list        <- list("reject" = ret, "null.value" = mu.0, "alternative" = alternative, "method" = "t.test", "estimate" = pop.var, "data.name" = deparse(substitute(x)), "statistic" = pop.stat, "parameters" = pop.par, "p.value" = p.v, "estimation.method" = est, "sample.size" = length(x), "conf.int" = conf.int)
+    # class(t.list) <- c("htest", class(t.list))
+    t.list = list("reject" = ret, "p.value" = p.v)
     return(t.list)
   }
   if(!is.null(y)){
@@ -224,7 +227,7 @@ t.testBoot.cpp <- function(x, y = NULL, mu.0 = 0, alpha = 0.05, alternative = "t
     )
     
     
-    crit   <- quantile(T.x, probs = c(alpha/2, alpha, 1-alpha, 1-alpha/2)) # compute critical values for one- and twosided
+    crit   <- quantile(T.x, probs = c(alpha/2, alpha, 1-alpha, 1-alpha/2), na.rm = T) # compute critical values for one- and twosided
     switch(alternative, # switch between alternative hypotheses and choose whether to reject or not reject
            two.sided = {
              ret    <- (t.true < crit[1] || t.true > crit[4])
@@ -244,23 +247,24 @@ t.testBoot.cpp <- function(x, y = NULL, mu.0 = 0, alpha = 0.05, alternative = "t
     p.v  <- min(p.v, 1 - p.v)
     
     # Prepare Results #######################################
-    dat.nam         <- c(deparse(substitute(x.1)), deparse(substitute(x.2)))
-    dat.nam.2       <- paste(dat.nam[1], "and", dat.nam[2])
-    h.0             <- 0
-    names(h.0)      <- "difference in means"
-    pop.var         <- c(mean(x.1.mean), mean(x.2.mean))
-    names(pop.var)  <- paste("Mean of", dat.nam)
-    pop.stat        <- t.true
-    names(pop.stat) <- "t"
-    pop.par         <- n - 2
-    names(pop.par)  <- "df"
-    conf.int        <- quantile((x.1.mean - x.2.mean), probs = c(alpha/2, 1-alpha/2))
-    
-    attr(conf.int, "conf.level") <- 1 - alpha
-    ##########################################################
-    
-    t.list        <- list("reject" = ret ,"null.value" = h.0, "alternative" = alternative, "method" = "Welch Two Sample t-Test", "estimate" = pop.var, "data.name" = dat.nam.2, "statistic" = pop.stat, "parameters" = pop.par, "p.value" = p.v, "estimation.method" = est, "sample.size" = n, "conf.int" = conf.int)
-    class(t.list) <- c("htest", class(t.list))
+    # dat.nam         <- c(deparse(substitute(x.1)), deparse(substitute(x.2)))
+    # dat.nam.2       <- paste(dat.nam[1], "and", dat.nam[2])
+    # h.0             <- 0
+    # names(h.0)      <- "difference in means"
+    # pop.var         <- c(mean(x.1.mean), mean(x.2.mean))
+    # names(pop.var)  <- paste("Mean of", dat.nam)
+    # pop.stat        <- t.true
+    # names(pop.stat) <- "t"
+    # pop.par         <- n - 2
+    # names(pop.par)  <- "df"
+    # conf.int        <- quantile((x.1.mean - x.2.mean), probs = c(alpha/2, 1-alpha/2))
+    # 
+    # attr(conf.int, "conf.level") <- 1 - alpha
+    # ##########################################################
+    # 
+    # t.list        <- list("reject" = ret ,"null.value" = h.0, "alternative" = alternative, "method" = "Welch Two Sample t-Test", "estimate" = pop.var, "data.name" = dat.nam.2, "statistic" = pop.stat, "parameters" = pop.par, "p.value" = p.v, "estimation.method" = est, "sample.size" = n, "conf.int" = conf.int)
+    # class(t.list) <- c("htest", class(t.list))
+    t.list = list("reject" = ret, "p.value" = p.v)
     return(t.list)
   }
 }
