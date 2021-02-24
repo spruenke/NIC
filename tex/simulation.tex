@@ -1,1 +1,24 @@
-simulation setting
+%simulation setting
+
+For all: nboot = $\{10, 100, 500, 1000, 10000\}$ and n = $\{5, 10, 50, 100, 200\}$, simulate for nboot $\times$ n
+For all: Measure time of a function for each combination of n, nboot $100$ times and compute summary
+
+\subsection{Summary Statistics}
+* Examine Precision with MSE and MAE
+* True values from N(0,1) (arbitrary): Quartiles, Median, Standard Deviation and Mean
+
+\subsection{Linear Regression}
+
+* Examine Precision with Compound MSE and MAE
+** $ B  = \{\beta_1, ..., \beta_i, ..., \beta_k\}$
+** Compound MSE: $\frac{1}{\lvert B \rvert} \sum_{i = 1}^{\lvert B \rvert} \frac{1}{nboot} \sum_{j = 1}^{nboot} (\hat{\beta}_{ij} - \beta_i)^2$
+** Compound MAE: $\frac{1}{\lvert B \rvert} \sum_{i = 1}^{\lvert B \rvert} \frac{1}{nboot} \sum_{j = 1}^{nboot} \lvert (\hat{\beta}_{ij} - \beta_i) \rvert $
+* DGP: $X_1$: Discrete uniform from $30$ to $100$, $X_2$: U(50, 230), $X_3$: log(N(100, 7.5)), $X_4$: N(100, 7.5)
+* DGP: $\beta$ = (-16.046722, -9.140887, 10.661128, -11.014303)
+* DGP: Y = X$\beta$ + N(0,1)
+
+\subsection{t-Test}
+* For both one- and two-sample version
+* Nonparametric, Wild and Groupwise(two sample only)
+* Type-I-Error for N(0,1), Pois(5), Exp(3) and $\Chi^2$(2)
+* Type-II-Error for N(0.5, $\sigma$), N(0.75, $\sigma$), N(1, $\sigma$), N(1.25, $\sigma$), N(1.5, $\sigma$), $\sigma = 1$ (for two sample against N(0,1))

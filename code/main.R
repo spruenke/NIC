@@ -1,5 +1,5 @@
 ### Main Script for Bootstrap Analysis ###
-
+start.time = Sys.time()
 pkgs = c("Rcpp", "RcppArmadillo", "microbenchmark", "ggplot2", "gridExtra", "xtable")
 if(pkgs %in% installed.packages() == F) install.packages(pkgs = pkgs, dependencies = T)
 lapply(as.list(pkgs), library, quietly = T, character.only = T)
@@ -126,9 +126,414 @@ print(summary_xtable_R, file = "./results/tab_summary_r.tex")
 print(summary_xtable_Cpp, file = "./results/tab_summary_cpp.tex")
 print(summary_time_xtab_R, file = "./results/tab_summaryTime_r.tex")
 print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
+    
+######## t-Test study
+    
+    ### type I Error for one sample t-Test
+    
+    time.r = time.c = matrix(NA, nrow = nrow(dat.R), ncol = 6)
+    dat.R.np = dat.R.w = dat.C.np = dat.C.w = cbind(base_grid, "normal" = NA, "poisson" = NA, "exponential" =  NA, "chisq" = NA)
+    
+    for(i in 1:nrow(base_grid)){
+        A.temp.r.np = A.temp.r.w = A.temp.c.np = A.temp.c.w = matrix(NA, nrow = 4, ncol = 1000) # X from: Normal, Poisson, Exponential, ChiSquare
+        
+        
+        A.temp.r.np[1,] = replicate(1000, t.testBoot(rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i])$reject)
+        A.temp.r.w[1,] = replicate(1000, t.testBoot(rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.c.np[1,] = replicate(1000, t.testBoot.cpp(rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i])$reject)
+        A.temp.c.w[1,] = replicate(1000, t.testBoot.cpp(rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        
+        A.temp.r.np[2,] = replicate(1000, t.testBoot(rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i])$reject)
+        A.temp.r.w[2,] = replicate(1000, t.testBoot(rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.c.np[2,] = replicate(1000, t.testBoot.cpp(rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i])$reject)
+        A.temp.c.w[2,] = replicate(1000, t.testBoot.cpp(rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        
+        A.temp.r.np[3,] = replicate(1000, t.testBoot(rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i])$reject)
+        A.temp.r.w[3,] = replicate(1000, t.testBoot(rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.c.np[3,] = replicate(1000, t.testBoot.cpp(rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i])$reject)
+        A.temp.c.w[3,] = replicate(1000, t.testBoot.cpp(rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        
+        A.temp.r.np[4,] = replicate(1000, t.testBoot(rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i])$reject)
+        A.temp.r.w[4,] = replicate(1000, t.testBoot(rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.c.np[4,] = replicate(1000, t.testBoot.cpp(rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i])$reject)
+        A.temp.c.w[4,] = replicate(1000, t.testBoot.cpp(rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        
+        dat.R.np[i, c(3:6)] = rowMeans(A.temp.r.np)
+        dat.R.w[i, c(3:6)] = rowMeans(A.temp.w.np)
+        dat.C.np[i, c(3:6)] = rowMeans(A.temp.c.np)
+        dat.C.w[i, c(3:6)] = rowMeans(A.temp.c.w)
+        
+        x.sample = rchisq(n = dat.R$n[i], df = 2)
+        
+        time.r[i,] = summary(microbenchmark(t.testBoot(x.sample, mu.0 = 2, nboot = dat.R$nboots[i]))$time / 1000) # microseconds
+        time.c[i,] = summary(microbenchmark(t.testBoot.cpp(x.sample, mu.0 = 2, nboot = dat.R$nboots[i]))$time / 1000)
+    }
+    
+    
+    time.r = cbind(base_grid, time.r)
+    time.c = cbind(base_grid, time.c)
+    
+    colnames(time.r) = colnames(time.c) = c(colnames(base_grid), names(summary(rnorm(10))))
+    
+    l.p = list()
+    ind = seq(1, nrow(base_grid), 5)
+    for(i in seq(1, nrow(base_grid), 5)){
+        
+        l.p[[ind[i]]] = ggplot(data = dat.R.np[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Type-I-Error (", expression(alpha), ")"))
+        
+        l.p[[ind[i] + 1]] = ggplot(data = dat.C.np[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Type-I-Error (", expression(alpha), ")"))
+        
+        l.p[[ind[i] + 2]] = ggplot(data = dat.R.w[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Type-I-Error (", expression(alpha), ")"))
+        
+        l.p[[ind[i] + 3]] = ggplot(data = dat.C.w[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Type-I-Error (", expression(alpha), ")"))
+        
+        
+        l.p[[ind[i] + 4]] = ggplot()+
+            geom_line(mapping = aes(x = time.r[i + c(0:4), "nboots"], y = time.r[i + c(0:4), 3]), color = "red") +
+            geom_line(mapping = aes(x = time.c[i + c(0:4), "nboots"], y = time.c[i + c(0:4), 3]), color = "blue") +
+            labs(x = "Bootstrap Iterations", y = "Microseconds") # on Median
+        
+    }
+    
+    type1_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
+    ggsave("./resuls/plot_t1s1.pdf", plot = type1_plot, dpi = 300, width = 16, height = 9)
+    
+    ts1_time_xtab_R = xtable(time.r)
+    ts1_time_xtab_C = xtable(time.c)
+    
+    ts1_xtab_R_np = xtable(dat.R.np)
+    ts1_xtab_R_w = xtable(dat.R.w)
+    ts1_xtab_C_np = xtable(dat.C.np)
+    ts1_xtab_C_w = xtable(dat.C.w)
+    
+    print(ts1_time_xtab_R, file = "./results/tab_ts1Time_r.tex")
+    print(ts1_time_xtab_C, file = "./results/tab_ts1Time_Cpp.tex")
+    
+    ### Power Study
+    
+    dat.1 = dat.2 = dat.3 = dat.4 = dat.5 = cbind(base_grid, "R_np" = NA, "R_w" = NA, "C_np" =  NA, "C_w" = NA)
+    
+    for(i in 1:nrow(base_grid)){
+        A.temp.1 = A.temp.2 = A.temp.3 = A.temp.4 = A.temp.4 = matrix(NA, nrow = 4, ncol = 1000)
+        
+        A.temp.1[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.1[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.1[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.1[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        
+        A.temp.2[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.2[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.2[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.2[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        
+        A.temp.3[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.3[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.3[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.3[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        
+        A.temp.4[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.4[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.4[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.4[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        
+        A.temp.5[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.5[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.5[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.5[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        
+        dat.1[i, c(3:6)] = rowMeans(A.temp.1)
+        dat.2[i, c(3:6)] = rowMeans(A.temp.2)
+        dat.3[i, c(3:6)] = rowMeans(A.temp.3)
+        dat.4[i, c(3:6)] = rowMeans(A.temp.4)
+        dat.5[i, c(3:6)] = rowMeans(A.temp.5)
+    }
+    
+    l.p = list()
+    for(i in seq(1, nrow(base_grid), 5)){
+        
+        l.p[[i]] = ggplot(data = dat.1[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Power (", expression(1 - beta), ")"))
+        
+        l.p[[i + 1]] = ggplot(data = dat.2[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Power (", expression(1 - beta), ")"))
+        
+        l.p[[i + 2]] = ggplot(data = dat.3[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Power (", expression(1 - beta), ")"))
+        
+        l.p[[i + 3]] = ggplot(data = dat.4[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Power (", expression(1 - beta), ")"))
+        
+        l.p[[i + 4]] = ggplot(data = dat.5[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Power (", expression(1 - beta), ")"))
+        
+    }
+    
+    type2_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
+    ggsave("./resuls/plot_t2s1.pdf", plot = type2_plot, dpi = 300, width = 16, height = 9)
+    
+    
+    ### type I Error for two sample t-Test
+    time.r = time.c = matrix(NA, nrow = nrow(dat.R), ncol = 6)
+    dat.R.np = dat.R.w = dat.C.np = dat.C.w = dat.R.npg = dat.C.npg = cbind(base_grid, "normal" = NA, "poisson" = NA, "exponential" =  NA, "chisq" = NA)
+    
+    for(i in 1:nrow(base_grid)){
+        A.temp.r.np = A.temp.r.w = A.temp.c.np = A.temp.c.w = A.temp.r.npg = A.temp.c.npg = matrix(NA, nrow = 4, ncol = 1000) # X from: Normal, Poisson, Exponential, ChiSquare
+        
+        
+        A.temp.r.np[1,] = replicate(1000, t.testBoot(rnorm(n = dat.R$n[i]), rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i])$reject)
+        A.temp.r.w[1,] = replicate(1000, t.testBoot(rnorm(n = dat.R$n[i]), rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.c.np[1,] = replicate(1000, t.testBoot.cpp(rnorm(n = dat.R$n[i]), rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i])$reject)
+        A.temp.c.w[1,] = replicate(1000, t.testBoot.cpp(rnorm(n = dat.R$n[i]), rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.r.npg[1,] = replicate(1000, t.testBoot(rnorm(n = dat.R$n[i]), rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i], boot.type = "npg")$reject)
+        A.temp.c.npg[1,] = replicate(1000, t.testBoot.cpp(rnorm(n = dat.R$n[i]), rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i], boot.type = "npg")$reject)
+        
+        A.temp.r.np[2,] = replicate(1000, t.testBoot(rpois(n = dat.R$n[i], lambda = 5), rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i])$reject)
+        A.temp.r.w[2,] = replicate(1000, t.testBoot(rpois(n = dat.R$n[i], lambda = 5), rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.c.np[2,] = replicate(1000, t.testBoot.cpp(rpois(n = dat.R$n[i], lambda = 5), rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i])$reject)
+        A.temp.c.w[2,] = replicate(1000, t.testBoot.cpp(rpois(n = dat.R$n[i], lambda = 5), rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.r.npg[2,] = replicate(1000, t.testBoot(rpois(n = dat.R$n[i], lambda = 5), rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i], boot.type = "npg")$reject)
+        A.temp.c.npg[2,] = replicate(1000, t.testBoot.cpp(rpois(n = dat.R$n[i], lambda = 5), rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i], boot.type = "npg")$reject)
+        
+        A.temp.r.np[3,] = replicate(1000, t.testBoot(rexp(n = dat.R$n[i], rate = 3), rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i])$reject)
+        A.temp.r.w[3,] = replicate(1000, t.testBoot(rexp(n = dat.R$n[i], rate = 3), rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.c.np[3,] = replicate(1000, t.testBoot.cpp(rexp(n = dat.R$n[i], rate = 3), rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i])$reject)
+        A.temp.c.w[3,] = replicate(1000, t.testBoot.cpp(rexp(n = dat.R$n[i], rate = 3), rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.r.npg[3,] = replicate(1000, t.testBoot(rexp(n = dat.R$n[i], rate = 3), rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i], boot.type = "npg")$reject)
+        A.temp.c.npg[3,] = replicate(1000, t.testBoot.cpp(rexp(n = dat.R$n[i], rate = 3), rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i], boot.type = "npg")$reject)
+        
+        A.temp.r.np[4,] = replicate(1000, t.testBoot(rchisq(n = dat.R$n[i], df = 2), rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i])$reject)
+        A.temp.r.w[4,] = replicate(1000, t.testBoot(rchisq(n = dat.R$n[i], df = 2), rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.c.np[4,] = replicate(1000, t.testBoot.cpp(rchisq(n = dat.R$n[i], df = 2), rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i])$reject)
+        A.temp.c.w[4,] = replicate(1000, t.testBoot.cpp(rchisq(n = dat.R$n[i], df = 2), rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
+        A.temp.r.npg[4,] = replicate(1000, t.testBoot(rchisq(n = dat.R$n[i], df = 2), rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i], boot.type = "npg")$reject)
+        A.temp.c.npg[4,] = replicate(1000, t.testBoot.cpp(rchisq(n = dat.R$n[i], df = 2), rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i], boot.type = "npg")$reject)
+        
+        dat.R.np[i, c(3:6)] = rowMeans(A.temp.r.np)
+        dat.R.w[i, c(3:6)] = rowMeans(A.temp.w.np)
+        dat.C.np[i, c(3:6)] = rowMeans(A.temp.c.np)
+        dat.C.w[i, c(3:6)] = rowMeans(A.temp.c.w)
+        dat.R.npg[i, c(3:6)] = rowMeans(A.temp.r.npg)
+        dat.C.npg[i, c(3:6)] = rowMeans(A.temp.c.npg)
+        
+        x.sample = rchisq(n = dat.R$n[i], df = 2)
+        
+        time.r[i,] = summary(microbenchmark(t.testBoot(x.sample, mu.0 = 2, nboot = dat.R$nboots[i]))$time / 1000) # microseconds
+        time.c[i,] = summary(microbenchmark(t.testBoot.cpp(x.sample, mu.0 = 2, nboot = dat.R$nboots[i]))$time / 1000)
+    }
+    
+    
+    time.r = cbind(base_grid, time.r)
+    time.c = cbind(base_grid, time.c)
+    
+    colnames(time.r) = colnames(time.c) = c(colnames(base_grid), names(summary(rnorm(10))))
+    
+    l.p = list()
+    ind = seq(1, 35, 7)
+    for(i in seq(1, nrow(base_grid), 5)){
+        
+        l.p[[ind[i]]] = ggplot(data = dat.R.np[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Type-I-Error (", expression(alpha), ")"))
+        
+        l.p[[ind[i] + 1]] = ggplot(data = dat.C.np[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Type-I-Error (", expression(alpha), ")"))
+        
+        l.p[[ind[i] + 2]] = ggplot(data = dat.R.w[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Type-I-Error (", expression(alpha), ")"))
+        
+        l.p[[ind[i] + 3]] = ggplot(data = dat.C.w[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Type-I-Error (", expression(alpha), ")"))
+        
+        l.p[[ind[i] + 4]] = ggplot(data = dat.R.npg[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Type-I-Error (", expression(alpha), ")"))
+        
+        l.p[[ind[i] + 5]] = ggplot(data = dat.C.npg[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
+            labs(x = "Bootstrap Iterations", y = paste0("Type-I-Error (", expression(alpha), ")"))
+        
+        l.p[[ind[i] + 6]] = ggplot()+
+            geom_line(mapping = aes(x = time.r[i + c(0:4), "nboots"], y = time.r[i + c(0:4), 3]), color = "red") +
+            geom_line(mapping = aes(x = time.c[i + c(0:4), "nboots"], y = time.c[i + c(0:4), 3]), color = "blue") +
+            labs(x = "Bootstrap Iterations", y = "Microseconds") # on Median
+        
+    }
+    
+    type1_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 7))
+    ggsave("./resuls/plot_t1s2.pdf", plot = type1_plot, dpi = 300, width = 16, height = 9)
+    
+    ts2_time_xtab_R = xtable(time.r)
+    ts2_time_xtab_C = xtable(time.c)
+    
+    print(ts2_time_xtab_R, file = "./results/tab_ts2Time_r.tex")
+    print(ts2_time_xtab_C, file = "./results/tab_ts2Time_Cpp.tex")
+    
+    ### Power Study
+    
+    dat.1 = dat.2 = dat.3 = dat.4 = dat.5 = cbind(base_grid, "R_np" = NA, "R_w" = NA, "C_np" =  NA, "C_w" = NA, "R_npg" = NA, "C_npg" = NA)
+    
+    for(i in 1:nrow(base_grid)){
+        A.temp.1 = A.temp.2 = A.temp.3 = A.temp.4 = A.temp.4 = matrix(NA, nrow = 4, ncol = 1000)
+        
+        A.temp.1[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.1[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.1[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.1[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.1[5,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i], boot.type = "npg")$reject)
+        A.temp.1[6,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i], boot.type = "npg")$reject)
+        
+        A.temp.2[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.2[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.2[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.2[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.2[5,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i], boot.type = "npg")$reject)
+        A.temp.2[6,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i], boot.type = "npg")$reject)
+        
+        A.temp.3[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.3[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.3[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.3[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.3[5,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i], boot.type = "npg")$reject)
+        A.temp.3[6,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i], boot.type = "npg")$reject)
+        
+        A.temp.4[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.4[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.4[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.4[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.4[5,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i], boot.type = "npg")$reject)
+        A.temp.4[6,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i], boot.type = "npg")$reject)
+        
+        A.temp.5[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.5[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.5[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i])$reject)
+        A.temp.5[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
+        A.temp.5[5,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i], boot.type = "npg")$reject)
+        A.temp.5[6,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i], boot.type = "npg")$reject)
+        
+        dat.1[i, c(3:6)] = rowMeans(A.temp.1)
+        dat.2[i, c(3:6)] = rowMeans(A.temp.2)
+        dat.3[i, c(3:6)] = rowMeans(A.temp.3)
+        dat.4[i, c(3:6)] = rowMeans(A.temp.4)
+        dat.5[i, c(3:6)] = rowMeans(A.temp.5)
+    }
+    
+    l.p = list()
+    for(i in seq(1, nrow(base_grid), 5)){
+        
+        l.p[[i]] = ggplot(data = dat.1[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
+            geom_line(mapping = aes(x = nboots, y = C_npg), color = "orange") + 
+            geom_line(mapping = aes(x = nboots, y = R_npg), color = "purple") +
+            labs(x = "Bootstrap Iterations", y = paste0("Power (", expression(1 - beta), ")"))
+        
+        l.p[[i + 1]] = ggplot(data = dat.2[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
+            geom_line(mapping = aes(x = nboots, y = C_npg), color = "orange") + 
+            geom_line(mapping = aes(x = nboots, y = R_npg), color = "purple") +
+            labs(x = "Bootstrap Iterations", y = paste0("Power (", expression(1 - beta), ")"))
+        
+        l.p[[i + 2]] = ggplot(data = dat.3[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
+            geom_line(mapping = aes(x = nboots, y = C_npg), color = "orange") + 
+            geom_line(mapping = aes(x = nboots, y = R_npg), color = "purple") +
+            labs(x = "Bootstrap Iterations", y = paste0("Power (", expression(1 - beta), ")"))
+        
+        l.p[[i + 3]] = ggplot(data = dat.4[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
+            geom_line(mapping = aes(x = nboots, y = C_npg), color = "orange") + 
+            geom_line(mapping = aes(x = nboots, y = R_npg), color = "purple") +
+            labs(x = "Bootstrap Iterations", y = paste0("Power (", expression(1 - beta), ")"))
+        
+        l.p[[i + 4]] = ggplot(data = dat.5[i + c(0:4),])+
+            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
+            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
+            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
+            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
+            geom_line(mapping = aes(x = nboots, y = C_npg), color = "orange") + 
+            geom_line(mapping = aes(x = nboots, y = R_npg), color = "purple") +
+            labs(x = "Bootstrap Iterations", y = paste0("Power (", expression(1 - beta), ")"))
+        
+    }
+    
+    type2_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
+    ggsave("./resuls/plot_t2s2.pdf", plot = type2_plot, dpi = 300, width = 16, height = 9)
+    
 
 ######### Linear Regression
-
+    
     #### Specify a true data generating model (to assess accuracy of estimates)
     set.seed(314)
     beta = runif(4, -20, 20)
@@ -167,7 +572,7 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
         time.c[i,] = summary(microbenchmark(reg.boot.c(y, x, nboot = dat.R$nboots[i], boot.type = "wild"))$time / 1000)
         print(i)
     }
-
+    
     time.r = cbind(base_grid, time.r)
     time.c = cbind(base_grid, time.c)
     colnames(time.r) = colnames(time.c) = c(colnames(base_grid), names(summary(rnorm(10))))
@@ -251,186 +656,6 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     
     print(reg_time_xtab_R, file = "./results/tab_regTime_r.tex")
     print(reg_time_xtab_C, file = "./results/tab_regTime_Cpp.tex")
-    
-#### t-Test study
-    
-    ### type I Error for one sample t-Test
-    
-    time.r = time.c = matrix(NA, nrow = nrow(dat.R), ncol = 6)
-    dat.R.np = dat.R.w = dat.C.np = dat.C.w = cbind(base_grid, "normal" = NA, "poisson" = NA, "exponential" =  NA, "chisq" = NA)
-    
-    for(i in 1:nrow(base_grid)){
-        A.temp.r.np = A.temp.r.w = A.temp.c.np = A.temp.c.w = matrix(NA, nrow = 4, ncol = 1000) # X from: Normal, Poisson, Exponential, ChiSquare
-        
-        
-        A.temp.r.np[1,] = replicate(1000, t.testBoot(rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i])$reject)
-        A.temp.r.w[1,] = replicate(1000, t.testBoot(rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i], boot.type = "wild")$reject)
-        A.temp.c.np[1,] = replicate(1000, t.testBoot.cpp(rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i])$reject)
-        A.temp.c.w[1,] = replicate(1000, t.testBoot.cpp(rnorm(n = dat.R$n[i]), nboot = dat.R$nboots[i], boot.type = "wild")$reject)
-        
-        A.temp.r.np[2,] = replicate(1000, t.testBoot(rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i])$reject)
-        A.temp.r.w[2,] = replicate(1000, t.testBoot(rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
-        A.temp.c.np[2,] = replicate(1000, t.testBoot.cpp(rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i])$reject)
-        A.temp.c.w[2,] = replicate(1000, t.testBoot.cpp(rpois(n = dat.R$n[i], lambda = 5), mu.0 = 5, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
-        
-        A.temp.r.np[3,] = replicate(1000, t.testBoot(rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i])$reject)
-        A.temp.r.w[3,] = replicate(1000, t.testBoot(rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
-        A.temp.c.np[3,] = replicate(1000, t.testBoot.cpp(rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i])$reject)
-        A.temp.c.w[3,] = replicate(1000, t.testBoot.cpp(rexp(n = dat.R$n[i], rate = 3), mu.0 = 1/3, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
-        
-        A.temp.r.np[4,] = replicate(1000, t.testBoot(rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i])$reject)
-        A.temp.r.w[4,] = replicate(1000, t.testBoot(rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
-        A.temp.c.np[4,] = replicate(1000, t.testBoot.cpp(rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i])$reject)
-        A.temp.c.w[4,] = replicate(1000, t.testBoot.cpp(rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
-        
-        dat.R.np[i, c(3:6)] = rowMeans(A.temp.r.np)
-        dat.R.w[i, c(3:6)] = rowMeans(A.temp.w.np)
-        dat.C.np[i, c(3:6)] = rowMeans(A.temp.c.np)
-        dat.C.w[i, c(3:6)] = rowMeans(A.temp.c.w)
-        
-        x.sample = rchisq(n = dat.R$n[i], df = 2)
-        
-        time.r[i,] = summary(microbenchmark(t.testBoot(x.sample, mu.0 = 2, nboot = dat.R$nboots[i]))$time / 1000) # microseconds
-        time.c[i,] = summary(microbenchmark(t.testBoot.cpp(x.sample, mu.0 = 2, nboot = dat.R$nboots[i]))$time / 1000)
-    }
-    
-    
-    time.r = cbind(base_grid, time.r)
-    time.c = cbind(base_grid, time.c)
-    
-    colnames(time.r) = colnames(time.c) = c(colnames(base_grid), names(summary(rnorm(10))))
-    
-    l.p = list()
-    for(i in seq(1, nrow(base_grid), 5)){
-        
-        l.p[[i]] = ggplot(data = dat.R.np[i + c(0:4),])+
-            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
-            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
-            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
-            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
-            labs(x = "Bootstrap Iterations", y = "Type-I-Error")
-        
-        l.p[[i + 1]] = ggplot(data = dat.C.np[i + c(0:4),])+
-            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
-            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
-            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
-            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
-            labs(x = "Bootstrap Iterations", y = "Type-I-Error")
-        
-        l.p[[i + 2]] = ggplot(data = dat.R.w[i + c(0:4),])+
-            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
-            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
-            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
-            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
-            labs(x = "Bootstrap Iterations", y = "Type-I-Error")
-        
-        l.p[[i + 3]] = ggplot(data = dat.C.w[i + c(0:4),])+
-            geom_line(mapping = aes(x = nboots, y = normal), color = "black") + 
-            geom_line(mapping = aes(x = nboots, y = poisson), color = "blue") +
-            geom_line(mapping = aes(x = nboots, y = exponential), color = "red") + 
-            geom_line(mapping = aes(x = nboots, y = chisq), color = "green") +
-            labs(x = "Bootstrap Iterations", y = "Type-I-Error")
-        
-        l.p[[i + 4]] = ggplot()+
-            geom_line(mapping = aes(x = time.r[i + c(0:4), "nboots"], y = time.r[i + c(0:4), 3]), color = "red") +
-            geom_line(mapping = aes(x = time.c[i + c(0:4), "nboots"], y = time.c[i + c(0:4), 3]), color = "blue") +
-            labs(x = "Bootstrap Iterations", y = "Microseconds") # on Median
-        
-    }
-    
-    type1_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
-    ggsave("./resuls/plot_t1s1.pdf", plot = type1_plot, dpi = 300, width = 16, height = 9)
-    
-    ts1_time_xtab_R = xtable(time.r)
-    ts1_time_xtab_C = xtable(time.c)
-    
-    print(ts1_time_xtab_R, file = "./results/tab_ts1Time_r.tex")
-    print(ts1_time_xtab_C, file = "./results/tab_ts1Time_Cpp.tex")
-    
-    ### Power Study
-    
-    dat.1 = dat.2 = dat.3 = dat.4 = dat.5 = cbind(base_grid, "R_np" = NA, "R_w" = NA, "C_np" =  NA, "C_w" = NA)
-    
-    for(i in 1:nrow(base_grid)){
-        A.temp.1 = A.temp.2 = A.temp.3 = A.temp.4 = A.temp.4 = matrix(NA, nrow = 4, ncol = 1000)
-        
-        A.temp.1[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i])$reject)
-        A.temp.1[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
-        A.temp.1[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i])$reject)
-        A.temp.1[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
-        
-        A.temp.2[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i])$reject)
-        A.temp.2[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
-        A.temp.2[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i])$reject)
-        A.temp.2[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 0.75, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
-        
-        A.temp.3[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i])$reject)
-        A.temp.3[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
-        A.temp.3[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i])$reject)
-        A.temp.3[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
-        
-        A.temp.4[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i])$reject)
-        A.temp.4[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
-        A.temp.4[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i])$reject)
-        A.temp.4[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1.25, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
-        
-        A.temp.5[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i])$reject)
-        A.temp.5[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
-        A.temp.5[3,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i])$reject)
-        A.temp.5[4,] = replicate(1000, t.testBoot.cpp(rnorm(base_grid$n[i], 1.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
-        
-        dat.1[i, c(3:6)] = rowMeans(A.temp.1)
-        dat.2[i, c(3:6)] = rowMeans(A.temp.2)
-        dat.3[i, c(3:6)] = rowMeans(A.temp.3)
-        dat.4[i, c(3:6)] = rowMeans(A.temp.4)
-        dat.5[i, c(3:6)] = rowMeans(A.temp.5)
-    }
-    
-    l.p = list()
-    for(i in seq(1, nrow(base_grid), 5)){
-        
-        l.p[[i]] = ggplot(data = dat.1[i + c(0:4),])+
-            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
-            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
-            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
-            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
-            labs(x = "Bootstrap Iterations", y = "Type-II-Error")
-        
-        l.p[[i + 1]] = ggplot(data = dat.2[i + c(0:4),])+
-            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
-            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
-            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
-            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
-            labs(x = "Bootstrap Iterations", y = "Type-II-Error")
-        
-        l.p[[i + 2]] = ggplot(data = dat.3[i + c(0:4),])+
-            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
-            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
-            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
-            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
-            labs(x = "Bootstrap Iterations", y = "Type-II-Error")
-        
-        l.p[[i + 3]] = ggplot(data = dat.4[i + c(0:4),])+
-            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
-            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
-            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
-            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
-            labs(x = "Bootstrap Iterations", y = "Type-II-Error")
-        
-        l.p[[i + 4]] = ggplot(data = dat.5[i + c(0:4),])+
-            geom_line(mapping = aes(x = nboots, y = R_np), color = "black") + 
-            geom_line(mapping = aes(x = nboots, y = R_w), color = "blue") +
-            geom_line(mapping = aes(x = nboots, y = C_np), color = "red") + 
-            geom_line(mapping = aes(x = nboots, y = C_w), color = "green") +
-            labs(x = "Bootstrap Iterations", y = "Type-II-Error")
-        
-    }
-    
-    type2_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
-    ggsave("./resuls/plot_t2s1.pdf", plot = type2_plot, dpi = 300, width = 16, height = 9)
-    
-    
-    ### type I Error for two sample t-Test
-    
-    ### Power Study
+end.time = Sys.time()
+time.diff.total = end.time - start.time
     
