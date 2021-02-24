@@ -218,6 +218,7 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     type1_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
     ggsave("./results/plot_t1s1.pdf", plot = type1_plot, dpi = 300, width = 16, height = 9)
     
+    
     ts1_time_xtab_R = xtable(time.r)
     ts1_time_xtab_C = xtable(time.c)
     
@@ -234,7 +235,7 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     dat.1 = dat.2 = dat.3 = dat.4 = dat.5 = cbind(base_grid, "R_np" = NA, "R_w" = NA, "C_np" =  NA, "C_w" = NA)
     
     for(i in 1:nrow(base_grid)){
-        A.temp.1 = A.temp.2 = A.temp.3 = A.temp.4 = A.temp.4 = matrix(NA, nrow = 4, ncol = 1000)
+        A.temp.1 = A.temp.2 = A.temp.3 = A.temp.4 = A.temp.5 = matrix(NA, nrow = 4, ncol = 1000)
         
         A.temp.1[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i])$reject)
         A.temp.1[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
@@ -308,8 +309,12 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
         
     }
     
+    
+    
     type2_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
     ggsave("./results/plot_t2s1.pdf", plot = type2_plot, dpi = 300, width = 16, height = 9)
+    
+    save(file = "./results/ts1_data.RData", type1_plot, dat.R.np, dat.C.np, dat.R.w, dat.C.w, time.r, time.c, dat.1, dat.2, dat.3, dat.4, dat.5, type2_plot)
     
     
     ### type I Error for two sample t-Test
@@ -349,16 +354,17 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
         A.temp.c.npg[4,] = replicate(1000, t.testBoot.cpp(rchisq(n = dat.R$n[i], df = 2), rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i], boot.type = "npg")$reject)
         
         dat.R.np[i, c(3:6)] = rowMeans(A.temp.r.np)
-        dat.R.w[i, c(3:6)] = rowMeans(A.temp.w.np)
+        dat.R.w[i, c(3:6)] = rowMeans(A.temp.r.w)
         dat.C.np[i, c(3:6)] = rowMeans(A.temp.c.np)
         dat.C.w[i, c(3:6)] = rowMeans(A.temp.c.w)
         dat.R.npg[i, c(3:6)] = rowMeans(A.temp.r.npg)
         dat.C.npg[i, c(3:6)] = rowMeans(A.temp.c.npg)
         
-        x.sample = rchisq(n = dat.R$n[i], df = 2)
+        x.sample.1 = rchisq(n = dat.R$n[i], df = 2)
+        x.sample.2 = rchisq(n = dat.R$n[i], df = 2)
         
-        time.r[i,] = summary(microbenchmark(t.testBoot(x.sample, mu.0 = 2, nboot = dat.R$nboots[i]))$time / 1000) # microseconds
-        time.c[i,] = summary(microbenchmark(t.testBoot.cpp(x.sample, mu.0 = 2, nboot = dat.R$nboots[i]))$time / 1000)
+        time.r[i,] = summary(microbenchmark(t.testBoot(x.sample.1, x.sample.2, mu.0 = 2, nboot = dat.R$nboots[i]))$time / 1000) # microseconds
+        time.c[i,] = summary(microbenchmark(t.testBoot.cpp(x.sample.1, x.sample.2, mu.0 = 2, nboot = dat.R$nboots[i]))$time / 1000)
     }
     
     
@@ -434,7 +440,7 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     dat.1 = dat.2 = dat.3 = dat.4 = dat.5 = cbind(base_grid, "R_np" = NA, "R_w" = NA, "C_np" =  NA, "C_w" = NA, "R_npg" = NA, "C_npg" = NA)
     
     for(i in 1:nrow(base_grid)){
-        A.temp.1 = A.temp.2 = A.temp.3 = A.temp.4 = A.temp.4 = matrix(NA, nrow = 4, ncol = 1000)
+        A.temp.1 = A.temp.2 = A.temp.3 = A.temp.4 = A.temp.5 = matrix(NA, nrow = 4, ncol = 1000)
         
         A.temp.1[1,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i])$reject)
         A.temp.1[2,] = replicate(1000, t.testBoot(rnorm(base_grid$n[i], 0, 1), rnorm(base_grid$n[i], 0.5, 1), nboot = base_grid$nboots[i], boot.type = "wild")$reject)
@@ -531,7 +537,8 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     type2_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
     ggsave("./results/plot_t2s2.pdf", plot = type2_plot, dpi = 300, width = 16, height = 9)
     
-
+    save(file = "./results/ts1_data.RData", type1_plot, dat.R.np, dat.C.np, dat.R.w, dat.C.w, time.r, time.c, dat.1, dat.2, dat.3, dat.4, dat.5, type2_plot)
+    
 ######### Linear Regression
     
     #### Specify a true data generating model (to assess accuracy of estimates)
