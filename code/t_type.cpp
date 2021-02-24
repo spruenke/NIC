@@ -79,7 +79,7 @@ NumericVector tBoot2Np(const NumericVector x, const NumericVector y, const int n
     
     std::copy(x.begin(), x.end(), xy.begin());
     std::copy(y.begin(), y.end(), xy.begin() + x.size());
-    IntegerVector seq_1 = seq(0, n_1);
+    IntegerVector seq_1 = seq(0, (n_1 - 1));
     IntegerVector seq_2 = seq(n_1, (n_1 + n_2 - 1));
     NumericVector xy_boot = sample(xy, (n_1 + n_2), true);
     NumericVector x_boot = xy_boot[seq_1];
@@ -114,8 +114,8 @@ NumericVector tBoot2W(NumericVector x, NumericVector y, const int nboot){
   ind[0] = -1;
   ind[1] = 1;
   NumericVector t_stat(nboot);
-  const IntegerVector seq_1 = seq(0, n_1);
-  const IntegerVector seq_2 = seq(n_1, (n_2 - 1));
+  const IntegerVector seq_1 = seq(0, (n_1 - 1));
+  const IntegerVector seq_2 = seq(n_1, (n_1 + n_2 - 1));
   for(int i = 0; i < nboot; i++){
     NumericVector w = sample(ind, (n_1 + n_2), true);
     NumericVector w_1 = w[seq_1];
