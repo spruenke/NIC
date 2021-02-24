@@ -114,7 +114,7 @@ for(i in seq(1, nrow(base_grid), 5)){
 }
 
 summary_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
-ggsave("./resuls/plot_summary.pdf", plot = summary_plot, dpi = 300, width = 16, height = 9)
+ggsave("./results/plot_summary.pdf", plot = summary_plot, dpi = 300, width = 16, height = 9)
 
 save(file = "./results/summary_data.RData", summary_plot, dat.R, dat.Cpp, time.r, time.c)
 summary_xtable_R = xtable(t(dat.R))
@@ -159,7 +159,7 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
         A.temp.c.w[4,] = replicate(1000, t.testBoot.cpp(rchisq(n = dat.R$n[i], df = 2), mu.0 = 2, nboot = dat.R$nboots[i], boot.type = "wild")$reject)
         
         dat.R.np[i, c(3:6)] = rowMeans(A.temp.r.np)
-        dat.R.w[i, c(3:6)] = rowMeans(A.temp.w.np)
+        dat.R.w[i, c(3:6)] = rowMeans(A.temp.r.w)
         dat.C.np[i, c(3:6)] = rowMeans(A.temp.c.np)
         dat.C.w[i, c(3:6)] = rowMeans(A.temp.c.w)
         
@@ -216,7 +216,7 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     }
     
     type1_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
-    ggsave("./resuls/plot_t1s1.pdf", plot = type1_plot, dpi = 300, width = 16, height = 9)
+    ggsave("./results/plot_t1s1.pdf", plot = type1_plot, dpi = 300, width = 16, height = 9)
     
     ts1_time_xtab_R = xtable(time.r)
     ts1_time_xtab_C = xtable(time.c)
@@ -309,7 +309,7 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     }
     
     type2_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
-    ggsave("./resuls/plot_t2s1.pdf", plot = type2_plot, dpi = 300, width = 16, height = 9)
+    ggsave("./results/plot_t2s1.pdf", plot = type2_plot, dpi = 300, width = 16, height = 9)
     
     
     ### type I Error for two sample t-Test
@@ -421,7 +421,7 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     }
     
     type1_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 7))
-    ggsave("./resuls/plot_t1s2.pdf", plot = type1_plot, dpi = 300, width = 16, height = 9)
+    ggsave("./results/plot_t1s2.pdf", plot = type1_plot, dpi = 300, width = 16, height = 9)
     
     ts2_time_xtab_R = xtable(time.r)
     ts2_time_xtab_C = xtable(time.c)
@@ -529,7 +529,7 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     }
     
     type2_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
-    ggsave("./resuls/plot_t2s2.pdf", plot = type2_plot, dpi = 300, width = 16, height = 9)
+    ggsave("./results/plot_t2s2.pdf", plot = type2_plot, dpi = 300, width = 16, height = 9)
     
 
 ######### Linear Regression

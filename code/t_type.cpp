@@ -80,8 +80,8 @@ NumericVector tBoot2Np(const NumericVector x, const NumericVector y, const int n
     std::copy(x.begin(), x.end(), xy.begin());
     std::copy(y.begin(), y.end(), xy.begin() + x.size());
     IntegerVector seq_1 = seq(0, n_1);
-    IntegerVector seq_2 = seq(n_1, (n_2 - 1));
-    NumericVector xy_boot = sample(xy, n_1, true);
+    IntegerVector seq_2 = seq(n_1, (n_1 + n_2 - 1));
+    NumericVector xy_boot = sample(xy, (n_1 + n_2), true);
     NumericVector x_boot = xy_boot[seq_1];
     NumericVector y_boot = xy_boot[seq_2];
     
