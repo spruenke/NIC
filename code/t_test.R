@@ -69,16 +69,16 @@ t.testBoot <- function(x, y = NULL, mu.0 = 0, alpha = 0.05, alternative = "two.s
     t.true <- (mean(x) - mean(y)) / (sqrt((var(x)/n.1) + (var(y)/n.2))) # see Toutenburg p. 145
     
     switch(boot.type, # switch between (groupwise) nonparametric and wild bootstrap
-           npg = { # groupwise nonparametric bootstrap
-             x.1.boot <- matrix(sample(x, size = n.1*nboot, replace = T), ncol = nboot)
-             x.2.boot <- matrix(sample(y, size = n.2*nboot, replace = T), ncol = nboot)
-             x.1.mean <- colMeans(x.1.boot)
-             x.2.mean <- colMeans(x.2.boot)
-             x.1.var  <- (colSums(x.1.boot^2) - n.1*x.1.mean^2)/(n.1-1)
-             x.2.var  <- (colSums(x.2.boot^2) - n.2*x.2.mean^2)/(n.2-1)
-             T.x      <- (x.1.mean - x.2.mean) / (sqrt((x.1.var / n.1) + (x.2.var / n.2)))
-             est      <- "Groupwise Nonparametric Bootstrap"
-           },
+           # npg = { # groupwise nonparametric bootstrap
+           #   x.1.boot <- matrix(sample(x, size = n.1*nboot, replace = T), ncol = nboot)
+           #   x.2.boot <- matrix(sample(y, size = n.2*nboot, replace = T), ncol = nboot)
+           #   x.1.mean <- colMeans(x.1.boot)
+           #   x.2.mean <- colMeans(x.2.boot)
+           #   x.1.var  <- (colSums(x.1.boot^2) - n.1*x.1.mean^2)/(n.1-1)
+           #   x.2.var  <- (colSums(x.2.boot^2) - n.2*x.2.mean^2)/(n.2-1)
+           #   T.x      <- (x.1.mean - x.2.mean) / (sqrt((x.1.var / n.1) + (x.2.var / n.2)))
+           #   est      <- "Groupwise Nonparametric Bootstrap"
+           # },
            np  = { # Nonparametric Bootstrap
              x.boot   <- matrix(sample(c(x,y), size = n*nboot, replace = T), ncol = nboot)
              x.1.boot <- x.boot[1:n.1, ]
@@ -211,10 +211,10 @@ t.testBoot.cpp <- function(x, y = NULL, mu.0 = 0, alpha = 0.05, alternative = "t
     t.true <- (mean(x) - mean(y)) / (sqrt((var(x)/n.1) + (var(y)/n.2))) # see Toutenburg p. 145
     
     switch(boot.type, # switch between (groupwise) nonparametric and wild bootstrap
-           npg = { # groupwise nonparametric bootstrap
-             T.x <- tBoot2Npg(x, y, nboot)
-             est <- "Groupwise Nonparametric Bootstrap"
-           },
+           # npg = { # groupwise nonparametric bootstrap
+           #   T.x <- tBoot2Npg(x, y, nboot)
+           #   est <- "Groupwise Nonparametric Bootstrap"
+           # },
            np  = { # Nonparametric Bootstrap
              T.x <- tBoot2Np(x, y, nboot)
              est <- "Nonparametric Bootstrap"
