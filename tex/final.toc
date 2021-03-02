@@ -15,16 +15,24 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {5}Simulation Settings}{8}{section.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6}Empirical Analysis}{9}{section.6}%
+\contentsline {subsection}{\numberline {5.1}Summary Statistics}{8}{subsection.5.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {6.1}Accuracy}{9}{subsection.6.1}%
+\contentsline {subsection}{\numberline {5.2}Linear Regression}{8}{subsection.5.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {6.2}Type I and II Errors}{9}{subsection.6.2}%
+\contentsline {subsection}{\numberline {5.3}t-Test}{9}{subsection.5.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {6.3}Computational Complexity}{9}{subsection.6.3}%
+\contentsline {section}{\numberline {6}Empirical Analysis}{10}{section.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7}Conclusion}{10}{section.7}%
+\contentsline {subsection}{\numberline {6.1}Accuracy}{10}{subsection.6.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {}References}{11}{section*.7}%
+\contentsline {subsection}{\numberline {6.2}Computational Complexity}{11}{subsection.6.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {}Appendix A}{13}{section*.8}%
+\contentsline {subsection}{\numberline {6.3}Type I and II Errors}{12}{subsection.6.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7}Conclusion}{17}{section.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {}References}{18}{section*.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {}Appendix A}{20}{section*.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {}Appendix B}{24}{section*.9}%

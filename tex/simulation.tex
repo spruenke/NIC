@@ -1,24 +1,23 @@
 %simulation setting
-
-For all: nboot = $\{10, 100, 500, 1000, 10000\}$ and n = $\{5, 10, 50, 100, 200\}$, simulate for nboot $\times$ n
-For all: Measure time of a function for each combination of n, nboot $100$ times and compute summary
+In this section we present the simulation settings we use to demonstrate bootstrap techniques. For all different problems we adress, $25$ combinations of bootstrapping iterations ($nboot$) and sample sizes ($n$) are computed: $nboot = \{10, 100, 500, 1000, 10000\} \times n = \{5, 10, 50, 100, 200\}$. When it comes to measuring the speed of the implemented algorithm, we use microbenchmarking, calling the function with specified parameters $100$ times. Furthermore, the following problem-specific simulation settings are demonstrated within this paper.
 
 \subsection{Summary Statistics}
-* Examine Precision with MSE and MAE
-* True values from N(0,1) (arbitrary): Quartiles, Median, Standard Deviation and Mean
+Computing the summary statistics is mainly to demonstrate the accuracy of bootstrap techniques. This is, how precisely can we estimate paramters such as mean, median or standard deviation from a sample using bootstrap. To measure this, we compute the MSE and MAE of bootstrap estimates for randomly drawn samples from a $N(0,1$ population for each of the above named combinations. Recall the definitions of MSE and MAE:
+\begin{align*}
+	MSE \quad &:= \quad \frac{1}{nboot} \sum_{i=1}^{nboot} (\hat{\vartheta}_i - \vartheta)^2 \\
+	MAE \quad &:= \quad \frac{1}{nboot} \sum_{i=1}^{nboot} \lvert \hat{\vartheta}_i - \vartheta \rvert,
+\end{align*}
+where $\vartheta$ is the parameter of interest. We acknowledge, that the choice of $N(0,1)$ population is arbitrary and could be replaced by any other and is only motivated by it's simplicity and popularity.
 
 \subsection{Linear Regression}
-
-* Examine Precision with Compound MSE and MAE
-** $ B  = \{\beta_1, ..., \beta_i, ..., \beta_k\}$
-** Compound MSE: $\frac{1}{\lvert B \rvert} \sum_{i = 1}^{\lvert B \rvert} \frac{1}{nboot} \sum_{j = 1}^{nboot} (\hat{\beta}_{ij} - \beta_i)^2$
-** Compound MAE: $\frac{1}{\lvert B \rvert} \sum_{i = 1}^{\lvert B \rvert} \frac{1}{nboot} \sum_{j = 1}^{nboot} \lvert (\hat{\beta}_{ij} - \beta_i) \rvert $
-* DGP: $X_1$: Discrete uniform from $30$ to $100$, $X_2$: U(50, 230), $X_3$: log(N(100, 7.5)), $X_4$: N(100, 7.5)
-* DGP: $\beta$ = (-16.046722, -9.140887, 10.661128, -11.014303)
-* DGP: Y = X$\beta$ + N(0,1)
+In order to demonstrate computational complexity of bootstrap techniques and advantages of lower-level languages such as C++ over high-level languages such as R we examine a simple linear regression problem with four variables from a pre-specified data generating process (DGP). Furthermore, we define two accuracy measures which will be computed for an arbitrary setting, but since accuracy is not the main interest of this part of the paper it will not be done for the whole set of combinations. Let $B  = \{\beta_1, ..., \beta_i, ..., \beta_k\}$, then define the Compund MSE and MAE as:
+\begin{align*}
+cMSE \quad &:= \quad \frac{1}{\lvert B \rvert} \sum_{i = 1}^{\lvert B \rvert} \frac{1}{nboot} \sum_{j = 1}^{nboot} (\hat{\beta}_{ij} - \beta_i)^2 \\
+cMAE \quad &:= \quad \frac{1}{\lvert B \rvert} \sum_{i = 1}^{\lvert B \rvert} \frac{1}{nboot} \sum_{j = 1}^{nboot} \lvert (\hat{\beta}_{ij} - \beta_i) \rvert.
+\end{align*}
+Further, we defined an arbitrary DGP with the following parameters and data: $X_1$: Discrete uniform from $30$ to $100$, $X_2$: U(50, 230), $X_3$: log(N(100, 7.5)), $X_4$: N(100, 7.5) and \begin{align*}
+\beta \quad  &= \quad (-16.046722, -9.140887, 10.661128, -11.014303)
+\end{align*}. Thus, we have: $Y = X\beta + \epsilon$, where $\epsilon_i \thicksim N(0,1)$. Of course, specific bootstrapping techniques could work for more specific problems such as heteroskedastic errors or different data settings, but since we want to measure computational complexity and work on different problems in this paper we leave this for further research.
 
 \subsection{t-Test}
-* For both one- and two-sample version
-* Nonparametric, Wild and Groupwise(two sample only)
-* Type-I-Error for N(0,1), Pois(5), Exp(3) and $\Chi^2$(2)
-* Type-II-Error for N(0.5, $\sigma$), N(0.75, $\sigma$), N(1, $\sigma$), N(1.25, $\sigma$), N(1.5, $\sigma$), $\sigma = 1$ (for two sample against N(0,1))
+Finally, we want to adress the application of bootstrap techniques in statistical test problems. For this, we extensively simulate the t-Test. We note, that the research on statistical tests is much larger, but due to it's extensive application in empirical research the t-Test works well to show properties of bootstrap. However, we definitely recommend further research on other test-problems. Our simulation uses both one- and two-sample problems and, as before, both nonparametric and wild bootstrap. To simulate the Type-I-Error we create four different populations and test against their expectation ($H_0: \mu = \mu_0$) and ignore the required normality to gain some insight about how well the test reaches it's significance level, which is interesting for practioneers. Our actual populations are $N(0,1), Pois(5), Exp(3)$ and $\chi^2(2)$. When it comes to Type-II-Error (or Power, which is $1-\beta$ and thus directly related to it), we only use $N(\mu, \sigma)$ under the alternative and vary the true mean of the population. In the two-sample case we vary the difference in means for the power study. 

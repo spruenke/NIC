@@ -121,13 +121,17 @@ summary_plot = do.call("grid.arrange", c(l.p, nrow = 5, ncol = 5))
 ggsave("./results/plot_summary.pdf", plot = summary_plot, dpi = 300, width = 16, height = 9)
 
 save(file = "./results/summary_data.RData", summary_plot, dat.R, dat.Cpp, time.r, time.c)
-summary_xtable_R = xtable(t(dat.R))
-summary_xtable_Cpp = xtable(t(dat.Cpp))
+summary_xtable_R_MSE = xtable(dat.R[,c(1:12)], digits = c(0, 0, 0, rep(2, 10)))
+summary_xtable_R_MAE = xtable(dat.R[,c(1,2,13:22)], digits = c(0, 0, 0, rep(2, 10)))
+summary_xtable_Cpp_MSE = xtable(dat.Cpp[,c(1:12)], digits = c(0, 0, 0, rep(2, 10)))
+summary_xtable_Cpp_MAE = xtable(dat.Cpp[,c(1,2,13:22)], digits = c(0, 0, 0, rep(2, 10)))
 
 summary_time_xtab_R = xtable(time.r)
 summary_time_xtab_C = xtable(time.c)
-print(summary_xtable_R, file = "./results/tab_summary_r.tex")
-print(summary_xtable_Cpp, file = "./results/tab_summary_cpp.tex")
+print(summary_xtable_R_MSE, file = "./results/tab_summary_r_mse.tex", include.rownames = F)
+print(summary_xtable_R_MAE, file = "./results/tab_summary_r_mae.tex", include.rownames = F)
+print(summary_xtable_Cpp_MSE, file = "./results/tab_summary_cpp_mse.tex", include.rownames = F)
+print(summary_xtable_Cpp_MAE, file = "./results/tab_summary_cpp_mae.tex", include.rownames = F)
 print(summary_time_xtab_R, file = "./results/tab_summaryTime_r.tex")
 print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     
@@ -661,12 +665,13 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     save(file = "./results/reg_data.RData", time.r, time.c, temp.r, temp.c, temp.r.w, temp.c.w, errors)
     
     l.p = list()
+    reg_time = cbind(base_grid, "r" = log(time.r[,3]), "c" = log(time.c[,3]))
     #for(i in seq(1, nrow(dat.R), 5)){
     for(i in 1:5){
         
-        l.p[[i ]] = ggplot()+
-            geom_line(mapping = aes(x = dat.R[i + c(0:4), "nboots"], y = log(time.r[i + c(0:4), 3])), color = "red")+
-            geom_line(mapping = aes(x = dat.Cpp[i + c(0:4), "nboots"], y = log(time.c[i + c(0:4), 3])), color = "blue") +
+        l.p[[i]] = ggplot(data = reg_time[i + c(0:4), ])+
+            geom_line(mapping = aes(x = nboots, y = r), color = "red")+
+            geom_line(mapping = aes(x = nboots, y = c), color = "blue") +
             labs(x = "Bootstrap Iterations", y = "Log-Microseconds") # on Median
         
     }
@@ -702,11 +707,11 @@ print(summary_time_xtab_C, file = "./results/tab_summaryTime_Cpp.tex")
     reg_xtable = xtable(errors)
     print(reg_xtable, file = "./results/tab_reg.tex")
     
-    reg_time_xtab_R = xtable(time.r)
-    reg_time_xtab_C = xtable(time.c)
+    reg_time_xtab_R = xtable(time.r, digits = c(0,0,0, rep(2, 6)))
+    reg_time_xtab_C = xtable(time.c, digits = c(0,0,0, rep(2, 6)))
     
-    print(reg_time_xtab_R, file = "./results/tab_regTime_r.tex")
-    print(reg_time_xtab_C, file = "./results/tab_regTime_Cpp.tex")
+    print(reg_time_xtab_R, file = "./results/tab_regTime_r.tex", include.rownames = F)
+    print(reg_time_xtab_C, file = "./results/tab_regTime_Cpp.tex", include.rownames = F)
 end.time = Sys.time()
 time.diff.total = end.time - start.time
     
