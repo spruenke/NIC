@@ -1,13 +1,13 @@
 This section will cover formal aspects of the bootstrapping and is divided into two parts. The first one is a short overview of advantages and disadvantages. The second part will briefly describe mathematical aspects of the different applications covered within this seminar paper. 
 
 \subsection{Advantages and Disadvantages}
-One of the main advantages given by bootstrapping is the sample size. Usually, especially for frequentist statistics, small sample sizes are a huge problem since many applications or theorems rely on large samples or asymptotic behaviour. However, there are many situations where the researcher has to deal with a small sample size. Classical statistics fast become unreliable in such a setting. Here, resampling provides a solution to overcome this issue. \\
+One of the main advantages given by bootstrapping is the sample size. Usually, especially for frequentist statistics, small sample sizes are a huge problem since many applications or theorems rely on large samples or asymptotic behaviour. However, there are many situations where the researcher has to deal with a small sample size. In such a setting, classical statistics quickly become unreliable. Here, resampling provides a solution to overcome this issue. \\
 \\
 \noindent However, if the original sample from which resampling is conducted is a bad sample, the resampling techniques will not help any further. For example, consider a sample size of four and two observations of this are outliers, then the probability of resampling the outliers is quite high, although they might be unlikely in general. So, the resampling (as the name implies) relies on the sample as well and this is the main disadvantage. Furthermore, bootstrapping can require a lot of computations and thus cost time. Thus, bootstrapping, although asymptotically consistent, cannot provide general finite sample guarantees for estimators as the results depend on the small sample. 
 
 \subsection{Mathematical Aspects}
 This subsection deals with the formal aspects of the algorithm, specifically how and why it works.\\
-The general idea of bootstrapping is the following (for $nboot$ number of resampling iterations):
+The general idea of bootstrapping is the following Pseudocode (for $nboot$ number of resampling iterations):
 \begin{enumerate}
 	\item Fix the data x
 	\item FOR $i$ IN $1$ TO $nboot$ DO
@@ -39,8 +39,8 @@ There are two versions of bootstrap incorporated in this paper: The nonparametri
 	\subsubsection*{Summary Statistics}
 As mentioned before, there are three types of statistics we are going to analyze in the empirical section of this paper. The first type are summary statistics, computing the following metrics: Minimum, $25\%$-quantile, Median, Mean, $75\%$-quantile, Maximum and Standard Deviation. Of course, the Minimum and the Maximum are not really able to be resampled, since the absolute Minimum (Maximum) that could be obtained in the resampling is the actual Minimum (Maximum) of the original sample. The quantiles (and the Median is the $50\%$-quantile) are computed in the default way of the respective R-function \textit{quantile}, see \citet{r}. \\ The Standard Deviation is the squareroot of the corrected sample Variance. Since the original data is centered for the wild bootstrap, finally the original's sample mean has to be added to the bootstrapped location parameters. Sloppily said, this procedure of estimating parameters can be thought of as a nonparametric maximum likelihood approach, although this is not quite precisely formulated.
 
-	\subsubsection*{t-Type Test Statistics}
-Although simple, the t-type tests are a nice example for bootstrapping. However, this procedure can be extended to all possible test procedures one can think of (Lilliefors, Wilcoxon-Signed-Rank, Friedman, etc.). The idea is basically the same as before and the algorithm works in the same way. However, the statistic of interest is the T-statistic. For the one-sample case that is the following equation, see \citet{t}:
+	\subsubsection*{t-type test statistics}
+Although simple, the t-type tests are a nice example for bootstrapping. However, this procedure can be extended to all possible test procedures one can think of (Lilliefors, Wilcoxon-Signed-Rank, Friedman, etc.). The idea is basically the same as before and the algorithm works in the same way. However, the statistic of interest is the t-statistic. For the one-sample case that is the following equation, see \citet{t}:
 \begin{align*}
 	T(X) \quad &= \quad \frac{\bar{X} - \E[\bar{X}]}{\hat{\sigma}}\sqrt{n}.
 \end{align*}
@@ -48,7 +48,7 @@ When bootstrapping this statistic, we aim to mimic it's distribution and finally
 \begin{align*}
 	T(X\star \mid X) \quad &= \quad \frac{\bar{X\star} - \E[\bar{X\star} \mid X]}{\hat{\sigma}}\sqrt{n},
 \end{align*}
-where $\E[X\star \mid X] = \bar{X}$, so the conditional expectation of the bootstrap sample is the sample mean of the original data. For the two-sample t-Test the statistic looks different as well, since not only the difference of means has to be taken into account, but the pooled standard deviation, too:
+where $\E[X\star \mid X] = \bar{X}$, so the conditional expectation of the bootstrap sample is the sample mean of the original data. For the two-sample t-test the statistic looks different as well, since not only the difference of means has to be taken into account, but the pooled standard deviation, too:
 \begin{align*}
 	X'\star \quad &:= \quad X_2\star - X_1\star \\
 	T(X'\star \mid X) \quad &= \quad \frac{\bar{X'\star} - \E[\bar{X'\star}]}{\sqrt{\frac{\hat{\sigma_1^2\star}}{n_1} + \frac{\hat{\sigma_2^2\star}}{n_2}}},

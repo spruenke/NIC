@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.6.29) (preloaded format=pdflatex 2020.7.10)  2 MAR 2021 16:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.6.29) (preloaded format=pdflatex 2020.7.10)  3 MAR 2021 16:59
 entering extended mode
 **./final.tex
 (final.tex
@@ -977,13 +977,13 @@ Package pdftex.def Info: ./figures/plot_t1s2.pdf  used on input line 48.
 <./figures/plot_t2s1.pdf, id=314, 1156.32pt x 650.43pt>
 File: ./figures/plot_t2s1.pdf Graphic file (type pdf)
 <use ./figures/plot_t2s1.pdf>
-Package pdftex.def Info: ./figures/plot_t2s1.pdf  used on input line 59.
+Package pdftex.def Info: ./figures/plot_t2s1.pdf  used on input line 58.
 (pdftex.def)             Requested size: 462.5198pt x 260.16739pt.
  [13 <./figures/plot_t1s1.pdf>] [14 <./figures/plot_t1s2.pdf>]
 <./figures/plot_t2s2.pdf, id=335, 1156.32pt x 650.43pt>
 File: ./figures/plot_t2s2.pdf Graphic file (type pdf)
 <use ./figures/plot_t2s2.pdf>
-Package pdftex.def Info: ./figures/plot_t2s2.pdf  used on input line 67.
+Package pdftex.def Info: ./figures/plot_t2s2.pdf  used on input line 66.
 (pdftex.def)             Requested size: 462.5198pt x 260.16739pt.
 )
 [15 <./figures/plot_t2s1.pdf>] [16 <./figures/plot_t2s2.pdf>] (conclusion.tex)
@@ -1033,7 +1033,7 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 183.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 183.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 183.
 Package rerunfilecheck Info: File `final.out' has not changed.
-(rerunfilecheck)             Checksum: 8D452CA5B546A01C4D867A81204EA89C;1023.
+(rerunfilecheck)             Checksum: 977E29F2E21C365D45D4B6CB7D00FDDE;1024.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -1050,7 +1050,7 @@ Here is how much of TeX's memory you used:
  33001 multiletter control sequences out of 15000+200000
  601687 words of font info for 79 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 40i,12n,46p,2950b,1667s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 40i,12n,46p,2955b,1667s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}{C
 :/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C:/Us
 ers/erin-/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Us
@@ -1075,7 +1075,7 @@ erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.
 pfb><C:/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/s
 ymbols/msam7.pfb><C:/Users/erin-/AppData/Local/Programs/MiKTeX/fonts/type1/publ
 ic/amsfonts/symbols/msbm10.pfb>
-Output written on final.pdf (30 pages, 466050 bytes).
+Output written on final.pdf (30 pages, 466123 bytes).
 PDF statistics:
  492 PDF objects out of 1000 (max. 8388607)
  111 named destinations out of 1000 (max. 500000)
